@@ -57,7 +57,8 @@ const SingleEvent = () => {
     ...col,
     cell: (info) => {
       const [value, item] = [info.getValue(), info.row.original];
-      let amount = evt.isPaid ? evt.paymentPlans.find((x) => x.role == item.userId.role).price : 0;
+      const paymentPlan = evt.isPaid ? evt.paymentPlans?.find((x) => x.role == item.userId.role) : null;
+      let amount = paymentPlan?.price || 0;
       amount = amount ? formatCurrency(amount, item.userId.role == "GlobalNetwork" ? "USD" : "NGN") : "FREE";
       return col.accessor === "amount" ? amount : col.accessor === "paymentReference" ? value || "N/A" : value || "--";
     },

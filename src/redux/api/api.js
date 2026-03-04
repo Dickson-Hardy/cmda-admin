@@ -17,7 +17,7 @@ export const api = createApi({
   refetchOnMountOrArgChange: true,
   keepUnusedDataFor: 0.0001,
   endpoints: () => ({}),
-  tagTypes: ["DEVOTIONALS", "EMAIL_LOGS", "ADMIN_NOTIFICATIONS"],
+  tagTypes: ["DEVOTIONALS", "EMAIL_LOGS", "ADMIN_NOTIFICATIONS", "PROJECT_DELIVERABLES", "SERVICE_SUBSCRIPTIONS"],
 });
 
 export default api;

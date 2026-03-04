@@ -8,6 +8,7 @@ export const NAV_LINKS = [
     children: [
       { title: "All Members", link: "/members", role: "MemberManager" },
       { title: "Transitions", link: "/transitions", role: "MemberManager" },
+      { title: "Chapters", link: "/chapters", role: "MemberManager" },
     ],
   },
   {
@@ -40,6 +41,22 @@ export const NAV_LINKS = [
   { title: "Products", link: "/products", icon: icons.store },
   { title: "Messaging", link: "/messaging", icon: icons.message },
   { title: "Notifications", link: "/notifications", icon: icons.bell },
+  {
+    title: "Project Management",
+    icon: icons.chart,
+    children: [
+      {
+        title: "Deliverables",
+        link: "/project/deliverables",
+        role: "SuperAdmin",
+      },
+      {
+        title: "Service Subscriptions",
+        link: "/project/service-subscriptions",
+        role: "SuperAdmin",
+      },
+    ],
+  },
   {
     title: "Settings",
     icon: icons.settings,

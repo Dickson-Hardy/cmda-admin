@@ -33,8 +33,9 @@ import {
   FaRegNewspaper,
   FaChevronLeft,
   FaCreditCard,
+  FaImage,
 } from "react-icons/fa";
-import { AiOutlineDelete, AiOutlineFileText } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineFileText, AiOutlineLoading3Quarters } from "react-icons/ai";
 import {
   BsFileEarmarkImage,
   BsFiletypeDoc,
@@ -50,6 +51,7 @@ import { BiBriefcase, BiChevronDown, BiChevronUp, BiLock, BiSortAlt2, BiWorld } 
 import { IoList } from "react-icons/io5";
 import { RxCounterClockwiseClock } from "react-icons/rx";
 import { GoDotFill } from "react-icons/go";
+import { MdOutlineBarChart, MdAccessTime } from "react-icons/md";
 
 const icons = {
   bell: <FiBell />,
@@ -109,6 +111,11 @@ const icons = {
   refresh: <MdRefresh />,
   reload: <MdRefresh />,
   database: <MdStorage />,
+  chart: <MdOutlineBarChart />,
+  time: <MdAccessTime />,
+  loading: <AiOutlineLoading3Quarters className="animate-spin" />,
+  add: <FaPlus />,
+  imageIcon: <FaImage />,
 };
 
 export default icons;

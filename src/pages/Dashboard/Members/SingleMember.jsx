@@ -40,8 +40,8 @@ const SingleMember = () => {
   const [updateSub, { isLoading: isUpdating }] = useUpdateMemberSubMutation();
   const [activateLifetime, { isLoading: isActivatingLifetime }] = useActivateLifetimeMembershipMutation();
 
-  const handleUpdateSub = ({ subDate }) => {
-    updateSub({ subDate, userId: member?._id })
+  const handleUpdateSub = ({ subYear }) => {
+    updateSub({ subYear, userId: member?._id })
       .unwrap()
       .then(() => {
         toast.success("Subscription UPDATED successfully");

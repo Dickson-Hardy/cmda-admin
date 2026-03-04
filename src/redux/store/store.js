@@ -15,7 +15,12 @@ const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: { ignoreActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER] },
+      serializableCheck: {
+        ignoreActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        // Ignore blob responses in API mutations
+        ignoredPaths: ["api.mutations"],
+        ignoredActionPaths: ["payload.data"],
+      },
     }).concat(combinedMiddlewares),
 });
 

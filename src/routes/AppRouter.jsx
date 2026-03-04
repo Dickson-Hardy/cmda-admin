@@ -39,6 +39,8 @@ import AddMember from "~/pages/Dashboard/Members/AddMember";
 import MemberOnboardingAnalytics from "~/pages/Dashboard/Members/MemberOnboardingAnalytics";
 import SystemSettings from "~/pages/Dashboard/Settings/SystemSettings";
 import Notifications from "~/pages/Dashboard/Notifications/Notifications";
+import ProjectDeliverables from "~/pages/Dashboard/ProjectDeliverables/ProjectDeliverables";
+import ServiceSubscriptions from "~/pages/Dashboard/ServiceSubscriptions/ServiceSubscriptions";
 
 export default function AppRouter() {
   const isAuthenticated = true;
@@ -101,6 +103,14 @@ export default function AppRouter() {
             { path: "products/create", element: <CreateProductPage /> },
             { path: "resources", element: <Resources /> },
             { path: "resources/:slug", element: <SingleResource /> },
+            {
+              path: "project",
+              element: <ProtectedRoutes restrictedRoles={["MemberManager", "FinanceManager"]} />,
+              children: [
+                { path: "deliverables", element: <ProjectDeliverables /> },
+                { path: "service-subscriptions", element: <ServiceSubscriptions /> },
+              ],
+            },
             {
               path: "settings",
               element: <ProtectedRoutes restrictedRoles={["MemberManager", "FinanceManager"]} />,

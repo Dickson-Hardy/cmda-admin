@@ -19,7 +19,7 @@ const errorMiddleware = (store) => (next) => (action) => {
     : message || error || "Oops, something went wrong!";
 
   if ((isFulfilled && error) || isRejected) {
-    if (errorMessage.includes("expired token")) {
+    if (errorMessage && typeof errorMessage === "string" && errorMessage.includes("expired token")) {
       toast.error("Session has expired. Login again");
       setTimeout(() => {
         store.dispatch(clearTokens());
