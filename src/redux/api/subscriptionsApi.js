@@ -3,7 +3,7 @@ import api from "./api";
 const subscriptionsApi = api.injectEndpoints({
   endpoints: (build) => ({
     getAllSubscriptions: build.query({
-      query: ({ limit, page, searchBy, role, region }) => ({
+      query: ({ limit, page, searchBy, role, region, subscriptionYear }) => ({
         url: "/subscriptions",
         params: {
           limit,
@@ -11,14 +11,15 @@ const subscriptionsApi = api.injectEndpoints({
           ...(searchBy ? { searchBy } : {}),
           ...(role ? { role } : {}),
           ...(region ? { region } : {}),
+          ...(subscriptionYear ? { subscriptionYear } : {}),
         },
       }),
       transformResponse: (response) => response.data,
       providesTags: ["SUBS"],
     }),
     exportSubscriptions: build.mutation({
-      queryFn: async ({ callback, searchBy, role, region }, api, extraOptions, baseQuery) => {
-        console.log("CALL", { searchBy, role, region });
+      queryFn: async ({ callback, searchBy, role, region, subscriptionYear }, api, extraOptions, baseQuery) => {
+        console.log("CALL", { searchBy, role, region, subscriptionYear });
         const result = await baseQuery({
           url: "/subscriptions/export",
           method: "GET",
@@ -26,6 +27,7 @@ const subscriptionsApi = api.injectEndpoints({
             ...(searchBy ? { searchBy } : {}),
             ...(role ? { role } : {}),
             ...(region ? { region } : {}),
+            ...(subscriptionYear ? { subscriptionYear } : {}),
           },
           responseHandler: (response) => response.blob(),
           cache: "no-cache",

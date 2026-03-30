@@ -27,6 +27,9 @@ const Subscriptions = () => {
   const [openFilter, setOpenFilter] = useState(false);
   const [role, setRole] = useState("");
   const [region, setRegion] = useState("");
+  const [subscriptionYear, setSubscriptionYear] = useState("");
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({ length: 11 }, (_, index) => currentYear - index);
   const {
     data: subscriptions,
     isLoading,
@@ -37,6 +40,7 @@ const Subscriptions = () => {
     searchBy,
     role,
     region,
+    subscriptionYear: subscriptionYear ? Number(subscriptionYear) : undefined,
   });
   const { data: stats } = useGetSubscriptionStatsQuery();
 
@@ -182,7 +186,13 @@ const Subscriptions = () => {
     const callback = (result) => {
       downloadFile(result.data, "Subscriptions.csv");
     };
-    exportSubscriptions({ callback, searchBy, role, region });
+    exportSubscriptions({
+      callback,
+      searchBy,
+      role,
+      region,
+      subscriptionYear: subscriptionYear ? Number(subscriptionYear) : undefined,
+    });
   };
   const handleRefreshPendingPayments = async () => {
     try {
@@ -227,6 +237,21 @@ const Subscriptions = () => {
                 setCurrentPage(1);
               }}
             />
+            <select
+              value={subscriptionYear}
+              onChange={(event) => {
+                setSubscriptionYear(event.target.value);
+                setCurrentPage(1);
+              }}
+              className="h-10 min-w-[120px] px-3 border rounded-lg text-sm text-gray-700 bg-white"
+            >
+              <option value="">All Years</option>
+              {yearOptions.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
             <Button
               label="Refresh Pending Payments"
               loading={isRefreshingPayments}
