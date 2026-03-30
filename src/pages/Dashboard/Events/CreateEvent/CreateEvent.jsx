@@ -26,6 +26,7 @@ const CreateEvent = () => {
       name: evt?.name,
       description: evt?.description,
       linkOrLocation: evt?.linkOrLocation,
+      externalUrl: evt?.externalUrl,
       eventType: evt?.eventType,
       eventTags: evt?.eventTags,
       membersGroup: evt?.membersGroup,
@@ -76,6 +77,7 @@ const CreateEvent = () => {
   // Watch form values to show/hide conditional fields
   const isConference = watch("isConference");
   const conferenceType = watch("conferenceType");
+  const eventType = watch("eventType");
   const membersGroup = watch("membersGroup") || [];
   const useMultipleRegistrationPeriods = isConference && watch("isPaid");
   const isExternalProgram = watch("isExternalProgram");
@@ -97,7 +99,6 @@ const CreateEvent = () => {
       payload = {
         ...payload,
         description: payload.description || payload.name || "External program",
-        eventType: "Virtual",
         isConference: false,
         isPaid: false,
         paymentPlans: [],
@@ -257,7 +258,7 @@ const CreateEvent = () => {
                   <span className="font-medium">This is an External Program</span>
                 </label>
                 <span className="text-xs text-gray-600 ml-auto">
-                  External mode keeps setup minimal and makes the link clickable in event details.
+                  External mode disables conference and payment setup, but still allows audience and program settings.
                 </span>
               </div>
             </div>
@@ -375,47 +376,52 @@ const CreateEvent = () => {
             {!isExternalProgram && (
               <TextArea label="description" register={register} errors={errors} divClassName="col-span-2" />
             )}
-            {!isExternalProgram && (
-              <Select
-                label="eventType"
-                control={control}
-                options={["Physical", "Virtual", "Hybrid"].map((v) => ({ label: v, value: v }))}
-              />
-            )}
-            <TextInput label="linkOrLocation" register={register} errors={errors} required />
-            {!isExternalProgram && (
-              <Select
-                label="membersGroup"
-                title="Member Groups"
-                control={control}
-                options={memberGroups}
-                multiple
-                required
-              />
-            )}
-            {!isExternalProgram && (
-              <Select
-                label="eventTags"
-                control={control}
-                options={["Webinar", "Seminar", "Conference", "Training"].map((v) => ({ label: v, value: v }))}
-                multiple
-              />
-            )}
+            <Select
+              label="eventType"
+              control={control}
+              options={["Physical", "Virtual", "Hybrid"].map((v) => ({ label: v, value: v }))}
+            />
+            <TextInput
+              label="linkOrLocation"
+              title={eventType === "Physical" ? "Event Location" : "Event Link or Location"}
+              register={register}
+              errors={errors}
+              required
+            />
+            <TextInput
+              label="externalUrl"
+              title="External URL (Optional)"
+              register={register}
+              errors={errors}
+              placeholder="https://example.com"
+            />
+            <Select
+              label="membersGroup"
+              title="Member Groups"
+              control={control}
+              options={memberGroups}
+              multiple
+              required
+            />
+            <Select
+              label="eventTags"
+              control={control}
+              options={["Webinar", "Seminar", "Conference", "Training"].map((v) => ({ label: v, value: v }))}
+              multiple
+            />
 
             {/* Dynamic Payment Plans Component */}
             {!isExternalProgram && (
               <DynamicPaymentPlans selectedMemberGroups={membersGroup} isConference={isConference} />
             )}
-            {!isExternalProgram && (
-              <TextInput
-                label="eventDateTime"
-                title="Event Date & Time"
-                type="datetime-local"
-                register={register}
-                errors={errors}
-                required
-              />
-            )}
+            <TextInput
+              label="eventDateTime"
+              title="Event Date & Time"
+              type="datetime-local"
+              register={register}
+              errors={errors}
+              required
+            />
 
             {/* Virtual Meeting Info Section */}
             {!isExternalProgram && (watch("eventType") === "Virtual" || watch("eventType") === "Hybrid") && (
@@ -482,16 +488,14 @@ const CreateEvent = () => {
                 />
               </>
             )}
-            {!isExternalProgram && (
-              <TextArea
-                label="additionalInformation"
-                errors={errors}
-                register={register}
-                rows={2}
-                required={false}
-                divClassName="col-span-2"
-              />
-            )}
+            <TextArea
+              label="additionalInformation"
+              errors={errors}
+              register={register}
+              rows={2}
+              required={false}
+              divClassName="col-span-2"
+            />
             <div className="flex justify-end col-span-2">
               <Button
                 label={slug ? "Save Changes" : "Submit"}

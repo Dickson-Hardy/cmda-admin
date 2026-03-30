@@ -71,6 +71,7 @@ const SingleEvent = () => {
   const [openFilter, setOpenFilter] = useState(false);
   const [filteredRegMembers, setFilteredRegMembers] = useState([]);
   const clickableEventUrl = toClickableUrl(evt?.linkOrLocation);
+  const clickableExternalUrl = toClickableUrl(evt?.externalUrl);
 
   useEffect(() => {
     if (!evtStats?.registeredUsers) return;
@@ -145,7 +146,7 @@ const SingleEvent = () => {
 
           <div className="mt-6">
             <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">
-              Event {evt?.eventType === "Physical" ? "Location" : "Link"}
+              Event {evt?.eventType === "Physical" ? "Location" : "Link or Location"}
             </h4>
             {clickableEventUrl ? (
               <a
@@ -160,6 +161,24 @@ const SingleEvent = () => {
               <p className="text-base mb-1">{evt?.linkOrLocation}</p>
             )}
           </div>
+
+          {evt?.externalUrl && (
+            <div className="mt-4">
+              <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">External URL</h4>
+              {clickableExternalUrl ? (
+                <a
+                  href={clickableExternalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-base mb-1 text-primary underline break-all inline-block"
+                >
+                  {evt?.externalUrl}
+                </a>
+              ) : (
+                <p className="text-base mb-1">{evt?.externalUrl}</p>
+              )}
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-6 mt-6">
             {evt?.isPaid && evt?.paymentPlans?.length ? (
