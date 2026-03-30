@@ -14,6 +14,7 @@ import { classNames } from "~/utilities/classNames";
 import convertToCapitalizedWords from "~/utilities/convertToCapitalizedWords";
 import formatDate from "~/utilities/fomartDate";
 import { formatCurrency } from "~/utilities/formatCurrency";
+import { toClickableUrl } from "~/utilities/isExternalUrl";
 
 const SingleEvent = () => {
   const { slug } = useParams();
@@ -69,6 +70,7 @@ const SingleEvent = () => {
   const [role, setRole] = useState("");
   const [openFilter, setOpenFilter] = useState(false);
   const [filteredRegMembers, setFilteredRegMembers] = useState([]);
+  const clickableEventUrl = toClickableUrl(evt?.linkOrLocation);
 
   useEffect(() => {
     if (!evtStats?.registeredUsers) return;
@@ -145,7 +147,18 @@ const SingleEvent = () => {
             <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">
               Event {evt?.eventType === "Physical" ? "Location" : "Link"}
             </h4>
-            <p className="text-base mb-1">{evt?.linkOrLocation}</p>
+            {clickableEventUrl ? (
+              <a
+                href={clickableEventUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-base mb-1 text-primary underline break-all inline-block"
+              >
+                {evt?.linkOrLocation}
+              </a>
+            ) : (
+              <p className="text-base mb-1">{evt?.linkOrLocation}</p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-6 mt-6">

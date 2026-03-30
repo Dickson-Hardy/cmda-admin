@@ -53,6 +53,7 @@ const CreateEvent = () => {
       virtualMeetingPasscode: evt?.virtualMeetingInfo?.passcode,
       virtualMeetingDialIn: evt?.virtualMeetingInfo?.dialInNumbers,
       virtualMeetingInstructions: evt?.virtualMeetingInfo?.additionalInstructions,
+      isExternalProgram: false,
     },
   });
 
@@ -77,6 +78,7 @@ const CreateEvent = () => {
   const conferenceType = watch("conferenceType");
   const membersGroup = watch("membersGroup") || [];
   const useMultipleRegistrationPeriods = isConference && watch("isPaid");
+  const isExternalProgram = watch("isExternalProgram");
 
   const handlePreview = (e) => {
     const file = e.target.files[0];
@@ -91,6 +93,24 @@ const CreateEvent = () => {
   };
 
   const onSubmit = (payload) => {
+    if (payload.isExternalProgram) {
+      payload = {
+        ...payload,
+        description: payload.description || payload.name || "External program",
+        eventType: "Virtual",
+        isConference: false,
+        isPaid: false,
+        paymentPlans: [],
+        eventTags: payload.eventTags?.length ? payload.eventTags : ["Seminar"],
+        membersGroup: payload.membersGroup?.length
+          ? payload.membersGroup
+          : ["Student", "Doctor_0_5_Years", "Doctor_Above_5_Years", "GlobalNetwork"],
+        eventDateTime: payload.eventDateTime || new Date().toISOString(),
+        additionalInformation: payload.additionalInformation || "External program",
+        requiresSubscription: false,
+      };
+    }
+
     // Process payment plans for conferences
     let paymentPlans = [];
     const isPaid = payload.isPaid || false;
@@ -166,6 +186,8 @@ const CreateEvent = () => {
       paymentPlans,
     };
 
+    delete payload.isExternalProgram;
+
     // Debug: Log the final payload being sent
     console.log("Final payload being sent:", payload);
 
@@ -224,8 +246,24 @@ const CreateEvent = () => {
         </h3>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4 gap-x-6">
-            {/* Conference Type Toggle */}
             <div className="col-span-2">
+              <div className="flex items-center gap-4 mb-1 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    {...register("isExternalProgram")}
+                    className="form-checkbox h-4 w-4 text-primary"
+                  />
+                  <span className="font-medium">This is an External Program</span>
+                </label>
+                <span className="text-xs text-gray-600 ml-auto">
+                  External mode keeps setup minimal and makes the link clickable in event details.
+                </span>
+              </div>
+            </div>
+
+            {/* Conference Type Toggle */}
+            <div className={`col-span-2 ${isExternalProgram ? "hidden" : ""}`}>
               <div className="flex items-center gap-4 mb-4 p-4 bg-gray-50 rounded-lg">
                 <label className="flex items-center gap-2">
                   <input type="checkbox" {...register("isConference")} className="form-checkbox h-4 w-4 text-primary" />
@@ -234,7 +272,7 @@ const CreateEvent = () => {
               </div>
             </div>
             {/* Subscription Requirement Toggle */}
-            <div className="col-span-2">
+            <div className={`col-span-2 ${isExternalProgram ? "hidden" : ""}`}>
               <div className="flex items-center gap-4 mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <label className="flex items-center gap-2">
                   <input
@@ -250,7 +288,7 @@ const CreateEvent = () => {
               </div>
             </div>
             {/* Conference-specific fields */}
-            {isConference && (
+            {isConference && !isExternalProgram && (
               <>
                 <Select
                   label="conferenceType"
@@ -334,41 +372,53 @@ const CreateEvent = () => {
               </div>
             </div>
             <TextInput label="name" register={register} errors={errors} required divClassName="col-span-2" />
-            <TextArea label="description" register={register} errors={errors} divClassName="col-span-2" />
-            <Select
-              label="eventType"
-              control={control}
-              options={["Physical", "Virtual", "Hybrid"].map((v) => ({ label: v, value: v }))}
-            />
+            {!isExternalProgram && (
+              <TextArea label="description" register={register} errors={errors} divClassName="col-span-2" />
+            )}
+            {!isExternalProgram && (
+              <Select
+                label="eventType"
+                control={control}
+                options={["Physical", "Virtual", "Hybrid"].map((v) => ({ label: v, value: v }))}
+              />
+            )}
             <TextInput label="linkOrLocation" register={register} errors={errors} required />
-            <Select
-              label="membersGroup"
-              title="Member Groups"
-              control={control}
-              options={memberGroups}
-              multiple
-              required
-            />
-            <Select
-              label="eventTags"
-              control={control}
-              options={["Webinar", "Seminar", "Conference", "Training"].map((v) => ({ label: v, value: v }))}
-              multiple
-            />
+            {!isExternalProgram && (
+              <Select
+                label="membersGroup"
+                title="Member Groups"
+                control={control}
+                options={memberGroups}
+                multiple
+                required
+              />
+            )}
+            {!isExternalProgram && (
+              <Select
+                label="eventTags"
+                control={control}
+                options={["Webinar", "Seminar", "Conference", "Training"].map((v) => ({ label: v, value: v }))}
+                multiple
+              />
+            )}
 
             {/* Dynamic Payment Plans Component */}
-            <DynamicPaymentPlans selectedMemberGroups={membersGroup} isConference={isConference} />
-            <TextInput
-              label="eventDateTime"
-              title="Event Date & Time"
-              type="datetime-local"
-              register={register}
-              errors={errors}
-              required
-            />
+            {!isExternalProgram && (
+              <DynamicPaymentPlans selectedMemberGroups={membersGroup} isConference={isConference} />
+            )}
+            {!isExternalProgram && (
+              <TextInput
+                label="eventDateTime"
+                title="Event Date & Time"
+                type="datetime-local"
+                register={register}
+                errors={errors}
+                required
+              />
+            )}
 
             {/* Virtual Meeting Info Section */}
-            {(watch("eventType") === "Virtual" || watch("eventType") === "Hybrid") && (
+            {!isExternalProgram && (watch("eventType") === "Virtual" || watch("eventType") === "Hybrid") && (
               <>
                 <div className="col-span-2 mt-4 mb-2">
                   <h4 className="font-semibold text-base text-gray-700 border-b pb-2">Virtual Meeting Details</h4>
@@ -432,14 +482,16 @@ const CreateEvent = () => {
                 />
               </>
             )}
-            <TextArea
-              label="additionalInformation"
-              errors={errors}
-              register={register}
-              rows={2}
-              required={false}
-              divClassName="col-span-2"
-            />
+            {!isExternalProgram && (
+              <TextArea
+                label="additionalInformation"
+                errors={errors}
+                register={register}
+                rows={2}
+                required={false}
+                divClassName="col-span-2"
+              />
+            )}
             <div className="flex justify-end col-span-2">
               <Button
                 label={slug ? "Save Changes" : "Submit"}

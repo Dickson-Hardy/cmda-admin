@@ -1,6 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
+const baseUrl =
+  import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? "https://api.cmdanigeria.net" : "http://localhost:3000");
+
+if (import.meta.env.DEV) {
+  console.log("API Base URL:", baseUrl);
+}
 
 export const api = createApi({
   reducerPath: "api",
