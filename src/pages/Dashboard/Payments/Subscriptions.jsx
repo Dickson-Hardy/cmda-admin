@@ -117,6 +117,7 @@ const Subscriptions = () => {
   const COLUMNS = [
     { header: "Reference", accessor: "reference" },
     { header: "Source", accessor: "source" },
+    { header: "Year", accessor: "subscriptionYear" },
     { header: "Amount", accessor: "amount" },
     { header: "Subscriber", accessor: "user.fullName" },
     { header: "Role", accessor: "user.role" },
@@ -151,6 +152,8 @@ const Subscriptions = () => {
         ) : (
           "No"
         )
+      ) : col.accessor === "subscriptionYear" ? (
+        <span>{value || (item.createdAt ? new Date(item.createdAt).getFullYear() : "--")}</span>
       ) : col.accessor === "user.role" ? (
         <span
           className={classNames(
@@ -260,6 +263,16 @@ const Subscriptions = () => {
               variant="outlined"
             />
           </div>
+        </div>
+
+        <div className="px-6 pb-4 text-sm text-gray-700 flex flex-wrap gap-6">
+          <span>
+            {subscriptionYear ? `Total for ${subscriptionYear}: ` : "Total records: "}
+            <b>{subscriptions?.meta?.totalItems || 0}</b>
+          </span>
+          <span>
+            Total amount: <b>{formatCurrency(subscriptions?.meta?.totalAmount || 0)}</b>
+          </span>
         </div>
 
         <Table
