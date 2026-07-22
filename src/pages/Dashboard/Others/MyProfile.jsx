@@ -75,7 +75,30 @@ const MyProfile = () => {
         </div>
         <form onSubmit={handlePwdSubmit(onSubmitPassword)} className="flex flex-col gap-4">
           <TextInput label="oldPassword" type="password" register={registerPwd} errors={pwdErrors} required />
-          <TextInput label="newPassword" type="password" register={registerPwd} errors={pwdErrors} required />
+          <TextInput
+            label="newPassword"
+            type="password"
+            register={registerPwd}
+            errors={pwdErrors}
+            required
+            rules={{
+              minLength: { value: 8, message: "Password must be at least 8 characters" },
+              pattern: {
+                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+                message: "Must contain uppercase, lowercase, number & special character",
+              },
+            }}
+          />
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 -mt-1">
+            <p className="text-xs font-semibold text-gray-700 mb-1">Password Requirements:</p>
+            <ul className="text-xs text-gray-600 space-y-0.5">
+              <li>&#8226; At least 8 characters</li>
+              <li>&#8226; One uppercase letter (A-Z)</li>
+              <li>&#8226; One lowercase letter (a-z)</li>
+              <li>&#8226; One number (0-9)</li>
+              <li>&#8226; One special character (@$!%*?&)</li>
+            </ul>
+          </div>
           <TextInput label="confirmPassword" type="password" register={registerPwd} errors={pwdErrors} required />
           <Button label="Change Password" type="submit" loading={isChanging} className="ml-auto w-full md:w-1/2" />
         </form>

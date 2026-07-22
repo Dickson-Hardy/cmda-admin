@@ -146,14 +146,19 @@ const AddMember = () => {
 
         <div>
           <TextInput
-            title="Date of Birth"
+            title={role === "GlobalNetwork" ? "Date of Birth (optional)" : "Date of Birth"}
             label="dateOfBirth"
             register={register}
             errors={errors}
             type="date"
             max={fourteenYrsAgo}
-            required
+            required={role !== "GlobalNetwork"}
           />
+          {role === "GlobalNetwork" && (
+            <p className="text-xs text-gray-500 mt-1">
+              Date of birth can be updated later by the member
+            </p>
+          )}
         </div>
 
         <div className="w-full">
