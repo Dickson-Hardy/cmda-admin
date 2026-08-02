@@ -9,6 +9,8 @@ import Select from "~/components/Global/FormElements/Select/Select";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import DynamicPaymentPlans from "~/components/Global/FormElements/DynamicPaymentPlans.jsx";
+import DynamicAccommodationOptions from "~/components/Global/FormElements/DynamicAccommodationOptions.jsx";
+import DynamicRegistrationFields from "~/components/Global/FormElements/DynamicRegistrationFields.jsx";
 import { useCreateEventMutation, useGetEventBySlugQuery, useUpdateEventBySlugMutation } from "~/redux/api/eventsApi";
 import { conferenceTypes, conferenceZones, conferenceRegions, memberGroups } from "~/constants/conferences";
 
@@ -37,9 +39,15 @@ const CreateEvent = () => {
         acc[key] = +price;
         return acc;
       }, {}),
+      accommodationOptions: evt?.accommodationOptions || [],
+      accommodationSelectionRequired: evt?.accommodationSelectionRequired || false,
+      registrationFields: (evt?.registrationFields || []).map((field) => ({
+        ...field,
+        optionsText: (field.options || []).join("\n"),
+      })),
       // Conference fields
       isConference: evt?.isConference || false,
-      conferenceType: evt?.conferenceConfig?.conferenceType,
+      conferenceType: evt?.conferenceConfig?.conferenceType || evt?.conferenceConfig?.type,
       conferenceZone: evt?.conferenceConfig?.zone,
       conferenceRegion: evt?.conferenceConfig?.region,
       regularRegistrationEndDate: evt?.conferenceConfig?.regularRegistrationEndDate?.slice(0, 16),
@@ -64,13 +72,23 @@ const CreateEvent = () => {
     formState: { errors },
     control,
     watch,
+    setValue,
   } = methods;
 
   useEffect(() => {
     if (slug && evt) {
       setImage(evt.featuredImageUrl);
+      setValue("accommodationOptions", evt.accommodationOptions || []);
+      setValue("accommodationSelectionRequired", Boolean(evt.accommodationSelectionRequired));
+      setValue(
+        "registrationFields",
+        (evt.registrationFields || []).map((field) => ({
+          ...field,
+          optionsText: (field.options || []).join("\n"),
+        }))
+      );
     }
-  }, [evt, slug]);
+  }, [evt, setValue, slug]);
   const [featuredImage, setFeaturedImage] = useState();
   const [image, setImage] = useState(null);
 
@@ -132,11 +150,66 @@ const CreateEvent = () => {
       }
     }
 
+    const configuredAccommodationOptions = (payload.accommodationOptions || []).filter((option) => option?.name?.trim());
+    const missingAccommodationPrice = configuredAccommodationOptions.find(
+      (option) =>
+        option.isPriced &&
+        (option.priceNgn === "" || option.priceNgn == null) &&
+        (option.priceUsd === "" || option.priceUsd == null)
+    );
+    if (missingAccommodationPrice) {
+      return toast.error(`Add an NGN or USD price for ${missingAccommodationPrice.name}`);
+    }
+
+    const accommodationOptions = configuredAccommodationOptions
+      .map((option) => {
+        const isPriced = Boolean(option.isPriced);
+        const priceNgn = option.priceNgn === "" || option.priceNgn == null ? undefined : Number(option.priceNgn);
+        const priceUsd = option.priceUsd === "" || option.priceUsd == null ? undefined : Number(option.priceUsd);
+
+        return {
+          id: option.id,
+          name: option.name.trim(),
+          description: option.description?.trim() || "",
+          isPriced,
+          ...(isPriced && priceNgn !== undefined ? { priceNgn } : {}),
+          ...(isPriced && priceUsd !== undefined ? { priceUsd } : {}),
+        };
+      });
+
+    const registrationFields = (payload.registrationFields || [])
+      .filter((field) => field?.label?.trim())
+      .map((field) => ({
+        id: field.id,
+        label: field.label.trim(),
+        type: field.type,
+        required: Boolean(field.required),
+        placeholder: field.placeholder?.trim() || "",
+        helpText: field.helpText?.trim() || "",
+        options:
+          field.type === "select" || field.type === "radio"
+            ? String(field.optionsText || "")
+                .split("\n")
+                .map((option) => option.trim())
+                .filter(Boolean)
+            : [],
+      }));
+    const invalidChoiceField = registrationFields.find(
+      (field) => (field.type === "select" || field.type === "radio") && field.options.length < 2
+    );
+    if (invalidChoiceField) {
+      return toast.error(`Add at least two choices for ${invalidChoiceField.label}`);
+    }
+
     // Clean up conference-specific fields based on conference type
     const cleanedPayload = { ...payload };
 
     // Only include conference fields if this is actually a conference
     if (cleanedPayload.isConference) {
+      cleanedPayload.accommodationOptions = accommodationOptions;
+      cleanedPayload.accommodationSelectionRequired =
+        accommodationOptions.length > 0 && Boolean(cleanedPayload.accommodationSelectionRequired);
+      cleanedPayload.registrationFields = registrationFields;
       // Only include conferenceZone if it's a Zonal conference
       if (cleanedPayload.conferenceType !== "Zonal") {
         delete cleanedPayload.conferenceZone;
@@ -164,6 +237,9 @@ const CreateEvent = () => {
       delete cleanedPayload.lateRegistrationEndDate;
       delete cleanedPayload.paystackSplitCode;
       delete cleanedPayload.usePayPalForGlobal;
+      delete cleanedPayload.accommodationOptions;
+      delete cleanedPayload.accommodationSelectionRequired;
+      delete cleanedPayload.registrationFields;
     }
 
     // Remove empty or undefined conference-specific fields
@@ -200,9 +276,9 @@ const CreateEvent = () => {
       }
 
       if (Array.isArray(val)) {
-        if (key === "paymentPlans") {
+        if (key === "paymentPlans" || key === "accommodationOptions" || key === "registrationFields") {
           // Append each object in paymentPlans as a JSON string
-          formData.append("paymentPlans", val.length ? JSON.stringify(val) : null);
+          formData.append(key, JSON.stringify(val));
         } else {
           // For other arrays, append each value individually with key[]
           val.forEach((v) => {
@@ -353,6 +429,9 @@ const CreateEvent = () => {
                   />
                   <label className="text-sm font-medium">Use PayPal for Global Network</label>
                 </div>
+
+                <DynamicAccommodationOptions />
+                <DynamicRegistrationFields />
               </>
             )}
             <div className="col-span-2">
