@@ -4,6 +4,7 @@ import store, { persistor } from "./redux/store/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ErrorBoundary from "./components/Global/ErrorBoundary/ErrorBoundary";
 
 export default function App() {
   return (
@@ -16,7 +17,9 @@ export default function App() {
         }
         persistor={persistor}
       >
-        <AppRouter />
+        <ErrorBoundary>
+          <AppRouter />
+        </ErrorBoundary>
 
         <ToastContainer
           position="top-right"

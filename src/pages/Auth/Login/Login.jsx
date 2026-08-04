@@ -26,9 +26,9 @@ const Login = () => {
     login(payload)
       .unwrap()
       .then(({ data }) => {
-        const { admin, accessToken } = data;
+        const { admin, accessToken, refreshToken } = data;
         dispatch(setUser(admin));
-        dispatch(setTokens({ accessToken }));
+        dispatch(setTokens({ accessToken, refreshToken }));
         toast.success("Login successful");
         navigate("/");
       });

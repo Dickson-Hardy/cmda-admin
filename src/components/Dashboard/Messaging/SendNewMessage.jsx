@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { doctorsRegionLists, globalRegionsData, studentChapterOptions } from "~/constants/regions";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import MiniPagination from "~/components/Global/MiniPagination/MiniPagination";
-import { useSocket } from "~/utilities/socket";
+import { useBroadcastMessageMutation } from "~/redux/api/chatsApi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -48,19 +48,23 @@ const SendNewMessage = ({ refetchContacts }) => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const { socket } = useSocket();
+  const [broadcastMessage, { isLoading: isSending }] = useBroadcastMessageMutation();
   const navigate = useNavigate();
 
   const handleSend = async () => {
-    socket.emit("broadcastMessage", {
-      receiverCriteria: { role: selectedRole, region: getValues("region"), searchBy },
-      content: getValues("message"),
-    });
-    navigate("/messaging");
-    setValue("message", null);
-    setOpenModal(false);
-    await refetchContacts();
-    toast.success("Broadcast message sent");
+    try {
+      await broadcastMessage({
+        receiverCriteria: { role: selectedRole, region: getValues("region"), searchBy },
+        content: getValues("message"),
+      }).unwrap();
+      navigate("/messaging");
+      setValue("message", null);
+      setOpenModal(false);
+      await refetchContacts();
+      toast.success("Broadcast message sent");
+    } catch (error) {
+      toast.error(error?.data?.message || "Broadcast could not be sent. Please try again.");
+    }
   };
 
   return (
@@ -169,6 +173,7 @@ const SendNewMessage = ({ refetchContacts }) => {
               large
               label="Send Broadcast Message"
               disabled={!watch("message")}
+              loading={isSending}
               onClick={handleSend}
             />
           </div>

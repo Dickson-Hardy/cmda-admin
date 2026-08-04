@@ -199,7 +199,7 @@ const WelcomePage = () => {
 
         <Button label="Filled Button" loading loadingText="Sending..." />
 
-        <Button dense onClick={() => toast.error("An error occured")}>
+        <Button dense onClick={() => toast.error("An error occurred")}>
           Toast
         </Button>
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import DOMPurify from "dompurify";
 import { toast } from "react-toastify";
 import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
@@ -52,7 +53,7 @@ const SingleResource = () => {
         <p
           id="resource-body"
           className="text-gray-dark mb-6"
-          dangerouslySetInnerHTML={{ __html: singleRes?.description }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(singleRes?.description || "") }}
         />
 
         {["Webinar", "Others"].includes(singleRes?.category) && (

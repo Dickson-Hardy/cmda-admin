@@ -3,7 +3,7 @@ import ContactListItem from "./ContactListItem";
 import { useSearchParams } from "react-router-dom";
 import Loading from "~/components/Global/Loading/Loading";
 
-const ContactList = ({ isLoading, allContacts }) => {
+const ContactList = ({ isLoading, allContacts, hasMore, onLoadMore, isLoadingMore }) => {
   const [, setSearchParams] = useSearchParams();
 
   return (
@@ -18,18 +18,29 @@ const ContactList = ({ isLoading, allContacts }) => {
               <Loading />
             </div>
           ) : (
-            allContacts?.map((contact) => {
-              return (
-                <ContactListItem
-                  key={contact._id}
-                  name={contact.user?.fullName}
-                  image={contact.user?.avatarUrl}
-                  subText={contact.lastMessage}
-                  onClick={() => setSearchParams({ id: contact.user?._id })}
-                  unreadCount={contact.unreadCount}
-                />
-              );
-            })
+            <>
+              {allContacts?.map((contact) => {
+                return (
+                  <ContactListItem
+                    key={contact._id}
+                    name={contact.user?.fullName}
+                    image={contact.user?.avatarUrl}
+                    subText={contact.lastMessage}
+                    onClick={() => setSearchParams({ id: contact.user?._id })}
+                    unreadCount={contact.unreadCount}
+                  />
+                );
+              })}
+              {hasMore && (
+                <button
+                  onClick={onLoadMore}
+                  disabled={isLoadingMore}
+                  className="w-full py-2 text-sm text-primary hover:bg-primary/10 rounded transition-colors disabled:opacity-50"
+                >
+                  {isLoadingMore ? "Loading..." : "Load more contacts"}
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>

@@ -15,7 +15,7 @@ const EmailManagement = () => {
   const [sendReminders, { isLoading: isSendingReminders }] = useSendSubscriptionRemindersMutation();
   const { data: logs, isLoading: isLoadingLogs, refetch: refetchLogs } = useGetEmailLogsQuery({ page: 1, limit: 20 });
   const { data: queueStatus, refetch: refetchQueue } = useGetQueueStatusQuery(undefined, {
-    pollingInterval: 5000, // Poll every 5 seconds
+    pollingInterval: 30000, // Poll every 30 seconds
   });
 
   const handleInputChange = (e) => {

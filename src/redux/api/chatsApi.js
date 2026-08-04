@@ -3,8 +3,28 @@ import api from "./api";
 const chatsApi = api.injectEndpoints({
   endpoints: (build) => ({
     getAllContacts: build.query({
-      query: () => ({ url: "/chats/contacts", cache: "no-cache" }),
+      query: ({ page = 1, limit = 30, search = "" } = {}) => ({
+        url: "/chats/contacts",
+        params: { page, limit, search },
+      }),
       transformResponse: (response) => response.data,
+      // Serialize by search term so different searches have different caches
+      serializeQueryArgs: ({ queryArgs }) => {
+        return `contacts-${queryArgs?.search || ""}`;
+      },
+      // Merge pages when loading more
+      merge: (currentCache, newItems, { arg }) => {
+        if (arg.page === 1) {
+          return newItems;
+        }
+        return {
+          ...newItems,
+          contacts: [...(currentCache.contacts || []), ...newItems.contacts],
+        };
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg?.page !== previousArg?.page || currentArg?.search !== previousArg?.search;
+      },
       providesTags: ["CONTACTS"],
     }),
     getChatHistory: build.query({
@@ -23,7 +43,7 @@ const chatsApi = api.injectEndpoints({
         }
         return {
           ...newItems,
-          messages: [...currentCache.messages, ...newItems.messages],
+          messages: [...newItems.messages, ...currentCache.messages],
         };
       },
       forceRefetch({ currentArg, previousArg }) {
@@ -31,9 +51,25 @@ const chatsApi = api.injectEndpoints({
       },
       invalidatesTags: ["CONTACTS"],
     }),
+    sendMessage: build.mutation({
+      query: (body) => ({ url: "/chats/messages", method: "POST", body }),
+      transformResponse: (response) => response.data,
+      invalidatesTags: ["CONTACTS"],
+    }),
+    broadcastMessage: build.mutation({
+      query: (body) => ({ url: "/chats/broadcast", method: "POST", body }),
+      transformResponse: (response) => response.data,
+      invalidatesTags: ["CONTACTS"],
+    }),
   }),
 });
 
-export const { useGetAllContactsQuery, useGetChatHistoryQuery, useLazyGetAllContactsQuery } = chatsApi;
+export const {
+  useGetAllContactsQuery,
+  useGetChatHistoryQuery,
+  useLazyGetAllContactsQuery,
+  useSendMessageMutation,
+  useBroadcastMessageMutation,
+} = chatsApi;
 
 export default chatsApi;

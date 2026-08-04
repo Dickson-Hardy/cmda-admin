@@ -3,11 +3,12 @@ import icons from "~/assets/js/icons";
 import { useNavigate } from "react-router-dom";
 import { classNames } from "~/utilities/classNames";
 import ContactListItem from "./ContactListItem";
-import { useGetAllContactsQuery, useGetChatHistoryQuery } from "~/redux/api/chatsApi";
+import { useGetAllContactsQuery, useGetChatHistoryQuery, useSendMessageMutation } from "~/redux/api/chatsApi";
 import Loading from "~/components/Global/Loading/Loading";
 import Message from "./Message";
 import { useGetMemberByIdQuery } from "~/redux/api/membersApi";
 import { useSocket } from "~/utilities/socket";
+import { toast } from "react-toastify";
 
 const ChatBox = ({ userId, recipientId }) => {
   const [inputValue, setInputValue] = useState("");
@@ -20,9 +21,10 @@ const ChatBox = ({ userId, recipientId }) => {
     data: chatData,
     isLoading,
     isFetching,
+    refetch: refetchHistory,
   } = useGetChatHistoryQuery({ id: recipientId, page, limit: 50 }, { refetchOnMountOrArgChange: true });
   const { data: recipientData, isLoading: loadingRecipientData } = useGetMemberByIdQuery(recipientId);
-  const { data } = useGetAllContactsQuery(null, { refetchOnMountOrArgChange: true });
+  const { data, refetch: refetchContacts } = useGetAllContactsQuery({ page: 1, limit: 30 }, { refetchOnMountOrArgChange: true });
 
   const [allMessages, setAllMessages] = useState([]);
 
@@ -35,11 +37,26 @@ const ChatBox = ({ userId, recipientId }) => {
   };
 
   const { socket } = useSocket();
+  const [sendMessage, { isLoading: isSending }] = useSendMessageMutation();
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
-    socket.emit("newMessage", { sender: userId, receiver: recipientId, content: inputValue });
-    setInputValue("");
+    const content = inputValue.trim();
+    if (!content || isSending) return;
+
+    try {
+      const savedMessage = await sendMessage({
+        receiver: recipientId,
+        content,
+        clientMessageId: crypto.randomUUID(),
+      }).unwrap();
+      setAllMessages((previous) =>
+        previous.some((message) => message._id === savedMessage._id) ? previous : [...previous, savedMessage]
+      );
+      setInputValue("");
+    } catch (error) {
+      toast.error(error?.data?.message || "Message could not be sent. Please try again.");
+    }
   };
 
   useEffect(() => {
@@ -52,17 +69,26 @@ const ChatBox = ({ userId, recipientId }) => {
     if (!socket) return;
 
     const handleNewMessage = (newMessage) => {
-      setAllMessages((prev) => [...prev, newMessage]);
+      setAllMessages((prev) =>
+        prev.some((message) => message._id === newMessage._id) ? prev : [...prev, newMessage]
+      );
     };
 
     const eventName = `newMessage_${[userId, recipientId].sort().join("_")}`;
 
     socket.on(eventName, handleNewMessage);
+    const recoverMissedMessages = () => {
+      setPage(1);
+      refetchHistory();
+      refetchContacts();
+    };
+    socket.on("connect", recoverMissedMessages);
 
     return () => {
       socket.off(eventName, handleNewMessage);
+      socket.off("connect", recoverMissedMessages);
     };
-  }, [socket, recipientId, userId]);
+  }, [socket, recipientId, userId, refetchHistory, refetchContacts]);
 
   const scrollRef = useRef(null);
   const messagesContainerRef = useRef(null);
@@ -167,6 +193,7 @@ const ChatBox = ({ userId, recipientId }) => {
           />
           <button
             type="submit"
+            disabled={isSending}
             className={classNames(
               "bg-primary text-white hover:bg-primaryContainer h-12 w-12 p-4 rounded-full shadow-lg",
               "inline-flex justify-center items-center text-2xl cursor-pointer",
