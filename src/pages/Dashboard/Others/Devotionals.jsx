@@ -27,14 +27,23 @@ const Devotionals = () => {
     { header: "Title", accessor: "title" },
     { header: "Key Verse", accessor: "keyVerse" },
     { header: "Key Verse Content", accessor: "keyVerseContent" },
+    { header: "Scheduled For", accessor: "scheduledFor" },
+    { header: "Status", accessor: "status" },
     { header: "Last Modified", accessor: "updatedAt" },
   ];
   const formattedColumns = COLUMNS.map((col) => ({
     ...col,
     cell: (info) => {
       const value = info.getValue();
+      const devotional = info.row.original;
       return col.accessor === "keyVerseContent"
         ? value.slice(0, 50) + "..."
+        : col.accessor === "scheduledFor"
+          ? formatDate(value || devotional.createdAt).dateTime
+          : col.accessor === "status"
+            ? new Date(devotional.scheduledFor || devotional.createdAt) <= new Date()
+              ? "Published"
+              : "Scheduled"
         : col.accessor === "updatedAt"
           ? formatDate(value).date
           : value;
@@ -43,7 +52,7 @@ const Devotionals = () => {
   }));
 
   const handleCreate = (payload) => {
-    createDevotional(payload)
+    createDevotional({ ...payload, scheduledFor: new Date(payload.scheduledFor).toISOString() })
       .unwrap()
       .then(() => {
         toast.success("Devotional created successfully");
@@ -52,7 +61,10 @@ const Devotionals = () => {
   };
 
   const handleUpdate = (payload) => {
-    updateDevotional({ id: selected?._id, body: payload })
+    updateDevotional({
+      id: selected?._id,
+      body: { ...payload, scheduledFor: new Date(payload.scheduledFor).toISOString() },
+    })
       .unwrap()
       .then(() => {
         toast.success("Devotional UPDATED successfully");
@@ -75,7 +87,7 @@ const Devotionals = () => {
     <div>
       <PageHeader
         title="Devotionals"
-        subtitle="Manage all devotionals, sorted by last modified date"
+        subtitle="Upload devotionals in advance and control when members see each one"
         action={() => {
           setOpenCreate(true);
           setSelected(null);

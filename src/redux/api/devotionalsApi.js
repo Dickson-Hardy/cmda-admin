@@ -3,7 +3,7 @@ import api from "./api";
 const devotionalsApi = api.injectEndpoints({
   endpoints: (build) => ({
     getAllDevotionals: build.query({
-      query: () => "/devotionals",
+      query: () => "/devotionals/admin",
       transformResponse: (response) => response.data,
       providesTags: ["DEVOTIONALS"],
     }),

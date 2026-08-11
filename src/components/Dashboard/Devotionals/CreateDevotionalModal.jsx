@@ -19,8 +19,15 @@ const CreateDevotionalModal = ({ isOpen, onClose, devotional, onSubmit, loading 
       ["title", "keyVerse", "keyVerseContent", "prayerPoints", "content"].forEach((key) => {
         setValue(key, devotional?.[key]);
       });
+      const scheduledDate = new Date(devotional.scheduledFor || devotional.createdAt);
+      const localDate = new Date(scheduledDate.getTime() - scheduledDate.getTimezoneOffset() * 60_000)
+        .toISOString()
+        .slice(0, 16);
+      setValue("scheduledFor", localDate);
     } else {
-      reset();
+      const now = new Date();
+      const localNow = new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 16);
+      reset({ scheduledFor: localNow });
     }
   }, [devotional, setValue, reset]);
 
@@ -32,6 +39,14 @@ const CreateDevotionalModal = ({ isOpen, onClose, devotional, onSubmit, loading 
         <TextInput label="keyVerse" register={register} required errors={errors} />
         <TextArea label="keyVerseContent" register={register} required errors={errors} rows={2} />
         <TextArea label="prayerPoints" register={register} required errors={errors} rows={2} />
+        <TextInput
+          title="Publish date and time"
+          label="scheduledFor"
+          type="datetime-local"
+          register={register}
+          required
+          errors={errors}
+        />
         <div className="flex justify-end">
           <Button label="Submit" type="submit" loading={loading} className="w-1/2 mt-1" />
         </div>
