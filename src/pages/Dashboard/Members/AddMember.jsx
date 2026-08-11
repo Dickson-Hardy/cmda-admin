@@ -65,8 +65,11 @@ const AddMember = () => {
   const navigate = useNavigate();
 
   const onSubmit = (payload) => {
+    const normalizedPayload = { ...payload };
+    if (!normalizedPayload.dateOfBirth) delete normalizedPayload.dateOfBirth;
+
     if (edit && member?._id) {
-      updateMember({ id: edit, body: payload })
+      updateMember({ id: edit, body: normalizedPayload })
         .unwrap()
         .then(() => {
           toast.success("Member profile UPDATED");
@@ -74,7 +77,7 @@ const AddMember = () => {
         });
     } else {
       // Use simplified admin creation endpoint
-      createMemberByAdmin(payload)
+      createMemberByAdmin(normalizedPayload)
         .unwrap()
         .then(() => {
           toast.success("Member account CREATED! Credentials have been sent to their email.");
@@ -146,19 +149,16 @@ const AddMember = () => {
 
         <div>
           <TextInput
-            title={role === "GlobalNetwork" ? "Date of Birth (optional)" : "Date of Birth"}
+            title="Date of Birth (optional)"
             label="dateOfBirth"
             register={register}
             errors={errors}
             type="date"
             max={fourteenYrsAgo}
-            required={role !== "GlobalNetwork"}
           />
-          {role === "GlobalNetwork" && (
-            <p className="text-xs text-gray-500 mt-1">
-              Date of birth can be updated later by the member
-            </p>
-          )}
+          <p className="text-xs text-gray-500 mt-1">
+            Date of birth can be added later by the member
+          </p>
         </div>
 
         <div className="w-full">
