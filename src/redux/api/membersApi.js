@@ -64,6 +64,13 @@ const membersApi = api.injectEndpoints({
       query: () => ({ url: "/admin/members/send-reminders", method: "POST" }),
       invalidatesTags: ["MEMBER_ANALYTICS"],
     }),
+    previewLifetimeMemberImport: build.mutation({
+      query: (body) => ({ url: "/admin/members/lifetime-import/preview", method: "POST", body }),
+    }),
+    confirmLifetimeMemberImport: build.mutation({
+      query: (body) => ({ url: "/admin/members/lifetime-import/confirm", method: "POST", body }),
+      invalidatesTags: ["MEMBERS", "MEMBERS_STATS"],
+    }),
     updateMember: build.mutation({
       query: ({ id, body }) => ({ url: `/users/${id}`, method: "PATCH", body }),
       invalidatesTags: ["TRANSITIONS"],
@@ -90,6 +97,8 @@ export const {
   useGetMembersStatsQuery,
   useGetMemberAnalyticsQuery,
   useSendPasswordRemindersMutation,
+  usePreviewLifetimeMemberImportMutation,
+  useConfirmLifetimeMemberImportMutation,
   useGetAllTransitionsQuery,
   useUpdateTransitionStatusMutation,
   useDeleteMemberByIdMutation,

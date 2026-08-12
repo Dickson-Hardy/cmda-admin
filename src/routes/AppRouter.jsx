@@ -37,6 +37,7 @@ import DashboardFaithEntryPage from "~/pages/Dashboard/Others/FaithEntry";
 import CreateProductPage from "~/pages/Dashboard/Products/CreateProduct";
 import AddMember from "~/pages/Dashboard/Members/AddMember";
 import MemberOnboardingAnalytics from "~/pages/Dashboard/Members/MemberOnboardingAnalytics";
+import LifetimeMemberImport from "~/pages/Dashboard/Members/LifetimeMemberImport";
 import SystemSettings from "~/pages/Dashboard/Settings/SystemSettings";
 import Notifications from "~/pages/Dashboard/Notifications/Notifications";
 import ProjectDeliverables from "~/pages/Dashboard/ProjectDeliverables/ProjectDeliverables";
@@ -93,6 +94,7 @@ export default function AppRouter() {
                 { path: "members/:membershipId", element: <SingleMember /> },
                 { path: "members/new", element: <AddMember /> },
                 { path: "members/analytics", element: <MemberOnboardingAnalytics /> },
+                { path: "members/lifetime-import", element: <LifetimeMemberImport /> },
                 { path: "transitions", element: <Transitions /> },
                 { path: "chapters", element: <Chapters /> },
               ],

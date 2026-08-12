@@ -9,6 +9,7 @@ export const NAV_LINKS = [
       { title: "All Members", link: "/members", role: "MemberManager" },
       { title: "Transitions", link: "/transitions", role: "MemberManager" },
       { title: "Chapters", link: "/chapters", role: "MemberManager" },
+      { title: "Import Lifetime Members", link: "/members/lifetime-import", role: "MemberManager" },
     ],
   },
   {

@@ -112,6 +112,11 @@ const Members = () => {
               icon={icons.analytics}
               variant="outlined"
             />
+            <Button
+              label="Import Lifetime Members"
+              onClick={() => navigate("/members/lifetime-import")}
+              variant="outlined"
+            />
             <Button label="Export" loading={isExporting} className="ml-auto" onClick={handleExport} />
             <Button
               label="Filter"
