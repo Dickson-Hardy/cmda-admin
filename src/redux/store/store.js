@@ -5,9 +5,15 @@ import rootReducer from "../reducers/rootReducer";
 import combinedMiddlewares from "../middlewares";
 
 const persistConfig = {
-  key: "root",
+  key: "root-v2",
   storage,
+  whitelist: ["auth"],
+  version: 2,
+  migrate: (state) => Promise.resolve(state ? { ...state, token: undefined, api: undefined } : state),
 };
+
+// Remove the legacy persisted tree because it may contain credentials and unrelated Redux slices.
+void storage.removeItem("persist:root");
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -22,6 +28,7 @@ const store = configureStore({
         ignoredActionPaths: ["payload.data"],
       },
     }).concat(combinedMiddlewares),
+  devTools: import.meta.env.MODE !== "production",
 });
 
 export const persistor = persistStore(store);

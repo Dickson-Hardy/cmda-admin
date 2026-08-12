@@ -10,6 +10,9 @@ const socketState = {
   connected: false,
 };
 
+let sharedSocket = null;
+let sharedSocketUsers = 0;
+
 export const useSocket = () => {
   const [socket, setSocket] = useState(null);
   const [state, setState] = useState(socketState);
@@ -25,22 +28,27 @@ export const useSocket = () => {
     }
 
     const URL = import.meta.env.VITE_API_BASE_URL || "https://cmdabackend-38258a63fa98.herokuapp.com";
-    const newSocket = io(URL, { auth: { token: accessToken } });
+    const newSocket = sharedSocket || io(URL, {
+      auth: { token: accessToken },
+      transports: ["websocket"],
+    });
+    if (!sharedSocket) sharedSocket = newSocket;
+    sharedSocketUsers += 1;
     let refreshing = false;
 
-    newSocket.on("connect", () => {
+    const onConnect = () => {
       setState({ connected: true });
-    });
+    };
 
-    newSocket.on("disconnect", () => {
+    const onDisconnect = () => {
       setState({ connected: false });
-    });
+    };
 
-    newSocket.on("connect_error", (error) => {
+    const onConnectError = (error) => {
       console.log("SOCKET_ERROR", error);
-    });
+    };
 
-    newSocket.on("auth_error", async () => {
+    const onAuthError = async () => {
       if (refreshing || !refreshToken) return;
       refreshing = true;
       try {
@@ -55,12 +63,24 @@ export const useSocket = () => {
       } finally {
         refreshing = false;
       }
-    });
+    };
+    newSocket.on("connect", onConnect);
+    newSocket.on("disconnect", onDisconnect);
+    newSocket.on("connect_error", onConnectError);
+    newSocket.on("auth_error", onAuthError);
 
     setSocket(newSocket);
 
     return () => {
-      newSocket.disconnect();
+      newSocket.off("connect", onConnect);
+      newSocket.off("disconnect", onDisconnect);
+      newSocket.off("connect_error", onConnectError);
+      newSocket.off("auth_error", onAuthError);
+      sharedSocketUsers = Math.max(0, sharedSocketUsers - 1);
+      if (sharedSocketUsers === 0) {
+        newSocket.disconnect();
+        sharedSocket = null;
+      }
     };
   }, [accessToken, refreshToken, dispatch]);
 

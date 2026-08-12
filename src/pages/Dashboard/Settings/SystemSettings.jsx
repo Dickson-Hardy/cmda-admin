@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Button from "~/components/Global/Button/Button";
 import PageHeader from "~/components/Global/PageHeader/PageHeader";
@@ -8,6 +9,7 @@ import { useCreateBackupMutation, useListBackupsQuery, useDeleteBackupMutation, 
 import formatDate from "~/utilities/fomartDate";
 
 const SystemSettings = () => {
+  const accessToken = useSelector((state) => state.token.accessToken);
   const [createBackup, { isLoading: isCreating }] = useCreateBackupMutation();
   const { data: backupsData, isLoading: isLoadingBackups, refetch } = useListBackupsQuery();
   const [deleteBackup] = useDeleteBackupMutation();
@@ -29,31 +31,7 @@ const SystemSettings = () => {
     try {
       setDownloadingBackup(item.filename);
       
-      // Get the token from localStorage
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("Authentication required");
-        return;
-      }
-
-      // Create download URL with authentication
-      const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-      const downloadUrl = `${apiUrl}/backup/download/${item.filename}`;
-      
-      // Use fetch with authentication to download the file
-      const response = await fetch(downloadUrl, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Download failed: ${response.status}`);
-      }
-
-      // Create a blob from the response
-      const blob = await response.blob();
+      const blob = await getDownloadUrl(item.filename).unwrap();
       
       // Create a temporary URL and trigger download
       const url = window.URL.createObjectURL(blob);

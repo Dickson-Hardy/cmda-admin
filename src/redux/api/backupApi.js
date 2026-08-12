@@ -12,7 +12,10 @@ export const backupApi = api.injectEndpoints({
       query: () => "/backup/list",
     }),
     downloadBackup: builder.query({
-      query: (filename) => `/backup/download/${filename}`,
+      query: (filename) => ({
+        url: `/backup/download/${filename}`,
+        responseHandler: (response) => response.blob(),
+      }),
     }),
     deleteBackup: builder.mutation({
       query: (filename) => ({

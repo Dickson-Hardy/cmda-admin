@@ -1,11 +1,12 @@
 let activeRefresh = null;
 
-export const refreshSession = (baseUrl, refreshToken) => {
+export const refreshSession = (baseUrl) => {
   if (!activeRefresh) {
     activeRefresh = fetch(`${baseUrl}/auth/refresh-token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken }),
+      credentials: "include",
+      body: JSON.stringify({ client: "admin" }),
     })
       .then(async (response) => {
         const result = await response.json();
