@@ -53,7 +53,10 @@ const membersApi = api.injectEndpoints({
       invalidatesTags: ["MEMBERS", "MEMBERS_STATS", "MEMBER_ANALYTICS"],
     }),
     getMemberAnalytics: build.query({
-      query: () => ({ url: "/admin/members/analytics" }),
+      query: ({ page = 1, limit = 20 } = {}) => ({
+        url: "/admin/members/analytics",
+        params: { page, limit },
+      }),
       transformResponse: (response) => response.data,
       providesTags: ["MEMBER_ANALYTICS"],
     }),

@@ -4,9 +4,15 @@ import Button from "~/components/Global/Button/Button";
 import Loading from "~/components/Global/Loading/Loading";
 import { useGetMemberAnalyticsQuery, useSendPasswordRemindersMutation } from "~/redux/api/membersApi";
 import icons from "~/assets/js/icons";
+import { useState } from "react";
 
 const MemberOnboardingAnalytics = () => {
-  const { data: analytics, isLoading, refetch } = useGetMemberAnalyticsQuery();
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
+  const { data: analytics, isLoading, isFetching, refetch } = useGetMemberAnalyticsQuery({
+    page,
+    limit: pageSize,
+  });
   const [sendReminders, { isLoading: isSendingReminders }] = useSendPasswordRemindersMutation();
 
   const handleSendReminders = () => {
@@ -73,8 +79,9 @@ const MemberOnboardingAnalytics = () => {
         <div>
           <h3 className="text-xl font-semibold mb-4">Members Pending Password Change</h3>
           {analytics?.pendingMembers?.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
+            <div>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -120,7 +127,39 @@ const MemberOnboardingAnalytics = () => {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+                </table>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-5">
+                <p className="text-sm text-gray-500">
+                  Showing {(analytics.pendingPagination.page - 1) * analytics.pendingPagination.limit + 1}–
+                  {Math.min(
+                    analytics.pendingPagination.page * analytics.pendingPagination.limit,
+                    analytics.pendingPagination.total
+                  )} of {analytics.pendingPagination.total} pending members
+                </p>
+                <div className="flex items-center gap-3">
+                  <Button
+                    label="Previous"
+                    variant="outlined"
+                    small
+                    disabled={analytics.pendingPagination.page <= 1 || isFetching}
+                    onClick={() => setPage((current) => Math.max(1, current - 1))}
+                  />
+                  <span className="text-sm text-gray-700">
+                    Page {analytics.pendingPagination.page} of {analytics.pendingPagination.totalPages}
+                  </span>
+                  <Button
+                    label="Next"
+                    variant="outlined"
+                    small
+                    disabled={
+                      analytics.pendingPagination.page >= analytics.pendingPagination.totalPages || isFetching
+                    }
+                    onClick={() => setPage((current) => current + 1)}
+                  />
+                </div>
+              </div>
             </div>
           ) : (
             <div className="text-center py-8 text-gray-500">
