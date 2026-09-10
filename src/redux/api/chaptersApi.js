@@ -3,26 +3,30 @@ import api from "./api";
 const chaptersApi = api.injectEndpoints({
   endpoints: (build) => ({
     getAllChapters: build.query({
-      query: ({ type } = {}) => ({
+      query: ({ type, page, limit } = {}) => ({
         url: "/chapters",
-        params: type ? { type } : {},
+        params: {
+          ...(type ? { type } : {}),
+          ...(page ? { page } : {}),
+          ...(limit ? { limit } : {}),
+        },
       }),
       transformResponse: (response) => {
-        // API returns chapters as a flat array directly
-        // Transform to match expected format: { items: [...], meta: {...} }
-        if (Array.isArray(response)) {
+        const payload = response?.data ?? response;
+
+        if (Array.isArray(payload)) {
           return {
-            items: response,
+            items: payload,
             meta: {
-              totalItems: response.length,
+              totalItems: payload.length,
               currentPage: 1,
-              itemsPerPage: response.length,
-              totalPages: 1,
+              itemsPerPage: payload.length,
+              totalPages: payload.length > 0 ? 1 : 0,
             },
           };
         }
-        // If response already has the expected structure
-        return response.data || response;
+
+        return payload;
       },
       providesTags: ["CHAPTERS"],
     }),

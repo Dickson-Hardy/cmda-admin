@@ -1,23 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import {
-  useGetAllChaptersQuery,
-  useGetChapterStatsQuery,
-  useDeleteChapterMutation,
-} from "~/redux/api/chaptersApi";
+import { useGetAllChaptersQuery, useGetChapterStatsQuery, useDeleteChapterMutation } from "~/redux/api/chaptersApi";
 import ChapterModal from "~/components/Dashboard/Chapters/ChapterModal";
+import Pagination from "~/components/Global/Pagination/Pagination";
 import { FiPlus, FiEdit2, FiTrash2, FiUsers } from "react-icons/fi";
 
 const Chapters = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
   const [selectedType, setSelectedType] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingChapter, setEditingChapter] = useState(null);
 
-  const { data: chapters = [], isLoading, refetch } = useGetAllChaptersQuery(
-    selectedType !== "all" ? { type: selectedType } : {}
-  );
+  const {
+    data: chaptersResult,
+    isLoading,
+    isFetching,
+    isError,
+    refetch,
+  } = useGetAllChaptersQuery({
+    page: currentPage,
+    limit: perPage,
+    ...(selectedType !== "all" ? { type: selectedType } : {}),
+  });
   const { data: stats } = useGetChapterStatsQuery();
   const [deleteChapter] = useDeleteChapterMutation();
+  const chapters = chaptersResult?.items || [];
+  const pagination = chaptersResult?.meta;
+  const totalPages = pagination?.totalPages || 0;
+
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const handleDelete = async (id, name) => {
     if (!window.confirm(`Are you sure you want to delete "${name}"?`)) return;
@@ -25,7 +41,11 @@ const Chapters = () => {
     try {
       await deleteChapter(id).unwrap();
       toast.success("Chapter deleted successfully");
-      refetch();
+      if (chapters.length === 1 && currentPage > 1) {
+        setCurrentPage((page) => page - 1);
+      } else {
+        refetch();
+      }
     } catch (error) {
       toast.error(error?.data?.message || "Failed to delete chapter");
     }
@@ -39,6 +59,11 @@ const Chapters = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingChapter(null);
+  };
+
+  const handleTypeChange = (type) => {
+    setSelectedType(type);
+    setCurrentPage(1);
   };
 
   const getTypeColor = (type) => {
@@ -109,41 +134,33 @@ const Chapters = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex gap-2">
             <button
-              onClick={() => setSelectedType("all")}
+              onClick={() => handleTypeChange("all")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedType === "all"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                selectedType === "all" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               All Chapters
             </button>
             <button
-              onClick={() => setSelectedType("Student")}
+              onClick={() => handleTypeChange("Student")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedType === "Student"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                selectedType === "Student" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               Student
             </button>
             <button
-              onClick={() => setSelectedType("Doctor")}
+              onClick={() => handleTypeChange("Doctor")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedType === "Doctor"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                selectedType === "Doctor" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               Doctor
             </button>
             <button
-              onClick={() => setSelectedType("Global")}
+              onClick={() => handleTypeChange("Global")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedType === "Global"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                selectedType === "Global" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               Global
@@ -160,10 +177,17 @@ const Chapters = () => {
 
       {/* Chapters Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        {isLoading ? (
+        {isLoading || isFetching ? (
           <div className="p-8 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
             <p className="mt-4 text-gray-600">Loading chapters...</p>
+          </div>
+        ) : isError ? (
+          <div className="p-8 text-center">
+            <p className="text-red-600">Unable to load chapters.</p>
+            <button onClick={refetch} className="mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">
+              Try again
+            </button>
           </div>
         ) : chapters.length === 0 ? (
           <div className="p-8 text-center">
@@ -199,9 +223,7 @@ const Chapters = () => {
                   <tr key={chapter._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{chapter.name}</div>
-                      {chapter.description && (
-                        <div className="text-sm text-gray-500">{chapter.description}</div>
-                      )}
+                      {chapter.description && <div className="text-sm text-gray-500">{chapter.description}</div>}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
@@ -212,28 +234,19 @@ const Chapters = () => {
                         {chapter.type}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {chapter.location || "N/A"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {chapter.memberCount || 0}
-                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{chapter.location || "N/A"}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{chapter.memberCount || 0}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          chapter.isActive
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
+                          chapter.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                         }`}
                       >
                         {chapter.isActive ? "Active" : "Inactive"}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button
-                        onClick={() => handleEdit(chapter)}
-                        className="text-blue-600 hover:text-blue-900 mr-4"
-                      >
+                      <button onClick={() => handleEdit(chapter)} className="text-blue-600 hover:text-blue-900 mr-4">
                         <FiEdit2 className="inline" />
                       </button>
                       <button
@@ -247,6 +260,38 @@ const Chapters = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {!isLoading && !isFetching && !isError && pagination?.totalItems > 0 && (
+          <div className="border-t border-gray-200 px-4 py-3">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
+                Rows per page
+                <select
+                  value={perPage}
+                  onChange={(event) => {
+                    setPerPage(Number(event.target.value));
+                    setCurrentPage(1);
+                  }}
+                  className="rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                >
+                  {[10, 25, 50].map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                totalItems={pagination.totalItems}
+                itemsPerPage={pagination.itemsPerPage}
+                onPageChange={setCurrentPage}
+                className="flex-1 py-0"
+              />
+            </div>
           </div>
         )}
       </div>
