@@ -18,6 +18,7 @@ const TextInput = ({
   required, // set to true or pass custom error message as string if field is required
   min,
   max,
+  step,
   showTitleLabel = true, // whether to show label or title of input above the component
   readOnly,
   accept,
@@ -53,6 +54,7 @@ const TextInput = ({
           placeholder={placeholder}
           min={min}
           max={max}
+          step={step}
           readOnly={readOnly}
         />
         {type === "password" && (

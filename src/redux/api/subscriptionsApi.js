@@ -47,7 +47,14 @@ const subscriptionsApi = api.injectEndpoints({
       providesTags: ["SUB_STATS"],
     }),
     updateMemberSub: build.mutation({
-      query: ({ userId, subYear }) => ({ url: `/subscriptions/activate/${userId}/${subYear}`, method: "POST" }),
+      query: ({ userId, subYear, amount, reference }) => ({
+        url: `/subscriptions/activate/${userId}/${subYear}`,
+        method: "POST",
+        body: {
+          ...(amount ? { amount: Number(amount) } : {}),
+          ...(reference ? { reference } : {}),
+        },
+      }),
       invalidatesTags: ["SINGLE_MEM"],
     }),
     activateLifetimeMembership: build.mutation({

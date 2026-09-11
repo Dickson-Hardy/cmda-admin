@@ -40,8 +40,8 @@ const SingleMember = () => {
   const [updateSub, { isLoading: isUpdating }] = useUpdateMemberSubMutation();
   const [activateLifetime, { isLoading: isActivatingLifetime }] = useActivateLifetimeMembershipMutation();
 
-  const handleUpdateSub = ({ subYear }) => {
-    updateSub({ subYear, userId: member?._id })
+  const handleUpdateSub = ({ subYear, amount, reference }) => {
+    updateSub({ subYear, amount, reference, userId: member?._id })
       .unwrap()
       .then(() => {
         toast.success("Subscription UPDATED successfully");
@@ -70,6 +70,9 @@ const SingleMember = () => {
     { header: "Training Name", accessor: "name" },
     { header: "Status", accessor: "status" },
   ];
+  const isUkEuropeMember =
+    member?.role === "GlobalNetwork" &&
+    ["uk/europe region", "uk/europe", "global europe"].includes(member?.region?.trim().toLowerCase());
   const formattedColumns = COLUMNS.map((col) => ({
     ...col,
     cell: (info) => {
@@ -119,9 +122,11 @@ const SingleMember = () => {
         <Button
           variant="outlined"
           color={member?.subscribed ? "secondary" : "primary"}
-          label={member?.subscribed ? "Already Subscribed" : "Activate Subscription"}
+          label={
+            isUkEuropeMember ? "Record UK Payment" : member?.subscribed ? "Already Subscribed" : "Activate Subscription"
+          }
           className="ml-auto"
-          disabled={member?.subscribed}
+          disabled={!isUkEuropeMember && member?.subscribed}
           onClick={() => setOpenSub(true)}
         />
         <Button
@@ -183,6 +188,7 @@ const SingleMember = () => {
         onClose={() => setOpenSub(false)}
         loading={isUpdating}
         onSubmit={handleUpdateSub}
+        member={member}
       />
 
       <ActivateLifetimeModal
