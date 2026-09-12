@@ -46,6 +46,11 @@ const subscriptionsApi = api.injectEndpoints({
       transformResponse: (response) => response.data,
       providesTags: ["SUB_STATS"],
     }),
+    getMemberSubscriptionStatus: build.query({
+      query: (userId) => ({ url: `/subscriptions/status/${userId}` }),
+      transformResponse: (response) => response.data,
+      providesTags: ["UK_SUB_STATUS"],
+    }),
     updateMemberSub: build.mutation({
       query: ({ userId, subYear, amount, reference }) => ({
         url: `/subscriptions/activate/${userId}/${subYear}`,
@@ -55,7 +60,7 @@ const subscriptionsApi = api.injectEndpoints({
           ...(reference ? { reference } : {}),
         },
       }),
-      invalidatesTags: ["SINGLE_MEM"],
+      invalidatesTags: ["SINGLE_MEM", "UK_SUB_STATUS", "SUBS", "SUB_STATS"],
     }),
     activateLifetimeMembership: build.mutation({
       query: ({ userId, isNigerian, lifetimeType }) => ({
@@ -72,6 +77,7 @@ export const {
   useGetAllSubscriptionsQuery,
   useGetSubscriptionStatsQuery,
   useGetSingleSubscriptionQuery,
+  useGetMemberSubscriptionStatusQuery,
   useExportSubscriptionsMutation,
   useUpdateMemberSubMutation,
   useActivateLifetimeMembershipMutation,

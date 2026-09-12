@@ -53,6 +53,10 @@ export const api = createApi({
     "SERVICE_SUBSCRIPTIONS",
     "CONTACTS",
     "CHAPTERS",
+    "SINGLE_MEM",
+    "SUBS",
+    "SUB_STATS",
+    "UK_SUB_STATUS",
   ],
 });
 

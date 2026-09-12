@@ -1,9 +1,10 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Button from "~/components/Global/Button/Button";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import Modal from "~/components/Global/Modal/Modal";
 
-const UpdateSubModal = ({ isOpen, onClose, onSubmit, loading, member }) => {
+const UpdateSubModal = ({ isOpen, onClose, onSubmit, loading, member, subscriptionStatus }) => {
   const currentYear = new Date().getFullYear();
   const isUkEuropeMember =
     member?.role === "GlobalNetwork" &&
@@ -12,7 +13,19 @@ const UpdateSubModal = ({ isOpen, onClose, onSubmit, loading, member }) => {
     register,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm({ mode: "all", defaultValues: { subYear: currentYear, amount: 20, reference: "" } });
+  const remainingAmount = subscriptionStatus?.remainingAmount ?? 240;
+
+  useEffect(() => {
+    if (isOpen) {
+      reset({
+        subYear: currentYear,
+        amount: isUkEuropeMember ? Math.min(20, remainingAmount) : 20,
+        reference: "",
+      });
+    }
+  }, [currentYear, isOpen, isUkEuropeMember, remainingAmount, reset]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Activate Subscription Status" maxWidth={400} showCloseBtn>
@@ -39,19 +52,20 @@ const UpdateSubModal = ({ isOpen, onClose, onSubmit, loading, member }) => {
               required
               errors={errors}
               min={0.01}
-              max={240}
+              max={remainingAmount}
               step="0.01"
             />
             <TextInput
               title="Bank transfer reference"
               label="reference"
               register={register}
+              required
               errors={errors}
-              placeholder="Optional"
+              placeholder="Enter the verified bank reference"
             />
             <p className="text-xs text-gray-600">
               Record only a transfer you have verified. The amount will count toward the member&apos;s £240 target for{" "}
-              {currentYear}.
+              {currentYear}. Remaining balance: £{remainingAmount}.
             </p>
           </>
         ) : null}

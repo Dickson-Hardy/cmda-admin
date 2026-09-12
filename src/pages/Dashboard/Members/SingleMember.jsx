@@ -10,15 +10,27 @@ import ConfirmationModal from "~/components/Global/ConfirmationModal/Confirmatio
 import StatusChip from "~/components/Global/StatusChip/StatusChip";
 import Table from "~/components/Global/Table/Table";
 import { useDeleteMemberByIdMutation, useGetMemberByIdQuery } from "~/redux/api/membersApi";
-import { useUpdateMemberSubMutation, useActivateLifetimeMembershipMutation } from "~/redux/api/subscriptionsApi";
+import {
+  useUpdateMemberSubMutation,
+  useActivateLifetimeMembershipMutation,
+  useGetMemberSubscriptionStatusQuery,
+} from "~/redux/api/subscriptionsApi";
 import { useGetAllTrainingsQuery } from "~/redux/api/trainingsApi";
 import convertToCapitalizedWords from "~/utilities/convertToCapitalizedWords";
 import formatDate from "~/utilities/fomartDate";
+import { formatCurrency } from "~/utilities/formatCurrency";
 
 const SingleMember = () => {
   const { membershipId } = useParams();
   const navigate = useNavigate();
   const { data: member } = useGetMemberByIdQuery(membershipId, { skip: !membershipId });
+  const isUkEuropeMember =
+    member?.role === "GlobalNetwork" &&
+    ["uk/europe region", "uk/europe", "global europe"].includes(member?.region?.trim().toLowerCase());
+  const { data: subscriptionStatus, isLoading: isLoadingSubscriptionStatus } = useGetMemberSubscriptionStatusQuery(
+    member?._id,
+    { skip: !member?._id || !isUkEuropeMember }
+  );
   const [deleteMember, { isLoading: isDeleting }] = useDeleteMemberByIdMutation();
   const [openDelete, setOpenDelete] = useState(false);
   const [openSub, setOpenSub] = useState(false);
@@ -46,6 +58,9 @@ const SingleMember = () => {
       .then(() => {
         toast.success("Subscription UPDATED successfully");
         setOpenSub(false);
+      })
+      .catch((error) => {
+        toast.error(error?.data?.message || "Unable to record the subscription payment");
       });
   };
 
@@ -70,9 +85,6 @@ const SingleMember = () => {
     { header: "Training Name", accessor: "name" },
     { header: "Status", accessor: "status" },
   ];
-  const isUkEuropeMember =
-    member?.role === "GlobalNetwork" &&
-    ["uk/europe region", "uk/europe", "global europe"].includes(member?.region?.trim().toLowerCase());
   const formattedColumns = COLUMNS.map((col) => ({
     ...col,
     cell: (info) => {
@@ -108,11 +120,20 @@ const SingleMember = () => {
           }),
       accountStatus: member?.emailVerified ? "Verified" : "Unverified",
       subscriptionStatus: member?.subscribed ? "Subscribed" : "Not Subscribed",
+      ...(isUkEuropeMember && subscriptionStatus
+        ? {
+            ukSubscriptionProgress: `${formatCurrency(subscriptionStatus.paidAmount, "GBP")} of ${formatCurrency(
+              subscriptionStatus.annualTarget,
+              "GBP"
+            )}`,
+            ukSubscriptionRemaining: formatCurrency(subscriptionStatus.remainingAmount, "GBP"),
+          }
+        : {}),
       lifetimeMembership: member?.hasLifetimeMembership ? `Yes (${member?.lifetimeMembershipType})` : "No",
       subscriptionExpiry: member?.subscriptionExpiry ? formatDate(member?.subscriptionExpiry).date : "N/A",
       memberSince: formatDate(member?.createdAt).dateTime,
     }),
-    [member]
+    [isUkEuropeMember, member, subscriptionStatus]
   );
 
   return (
@@ -123,10 +144,18 @@ const SingleMember = () => {
           variant="outlined"
           color={member?.subscribed ? "secondary" : "primary"}
           label={
-            isUkEuropeMember ? "Record UK Payment" : member?.subscribed ? "Already Subscribed" : "Activate Subscription"
+            isUkEuropeMember && subscriptionStatus?.isFullyPaid
+              ? "UK Year Fully Paid"
+              : isUkEuropeMember
+                ? "Record UK Payment"
+                : member?.subscribed
+                  ? "Already Subscribed"
+                  : "Activate Subscription"
           }
           className="ml-auto"
-          disabled={!isUkEuropeMember && member?.subscribed}
+          disabled={
+            isLoadingSubscriptionStatus || (isUkEuropeMember ? subscriptionStatus?.isFullyPaid : member?.subscribed)
+          }
           onClick={() => setOpenSub(true)}
         />
         <Button
@@ -189,6 +218,7 @@ const SingleMember = () => {
         loading={isUpdating}
         onSubmit={handleUpdateSub}
         member={member}
+        subscriptionStatus={subscriptionStatus}
       />
 
       <ActivateLifetimeModal
