@@ -20,16 +20,17 @@ const Header = ({ onToggleSidebar, unreadMessagesCount }) => {
 
   return (
     <header className="bg-white fixed top-0 inset-x-0 z-[2] gap-4 border-b">
-      <nav className="h-full w-full flex items-center gap-4 p-6 py-3">
+      <nav className="h-20 w-full flex items-center gap-3 px-4 py-3 sm:gap-4 sm:px-6">
         {/* Sidebar Toggle Button */}
         <button
           className="text-primary text-2xl focus:outline-none hover:bg-onPrimary rounded-md transition-all p-1 lg:hidden"
           onClick={onToggleSidebar}
+          aria-label="Toggle navigation"
         >
           {icons.menu}
         </button>
         {/* Logo */}
-        <Logo className="w-auto h-14" />
+        <Logo className="w-auto max-w-[140px] h-10 sm:h-14 object-contain" />
 
         <div className="flex-1" />
         {/* Message Icon */}

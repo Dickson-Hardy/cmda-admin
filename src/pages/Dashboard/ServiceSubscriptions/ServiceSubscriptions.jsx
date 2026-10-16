@@ -116,7 +116,11 @@ const ServiceSubscriptions = () => {
         pdf.setFont("helvetica", "bold");
         pdf.text("CMDA Nigeria - Service Subscriptions Report", 10, 8);
         pdf.setFontSize(8);
-        pdf.text(`Generated: ${new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })}`, pdfWidth - 60, 8);
+        pdf.text(
+          `Generated: ${new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })}`,
+          pdfWidth - 60,
+          8
+        );
         pdf.text(`Page ${pageNum} of ${totalPages}`, pdfWidth - 25, 8);
       };
 
@@ -126,7 +130,12 @@ const ServiceSubscriptions = () => {
         pdf.rect(0, pdfHeight - 8, pdfWidth, 8, "F");
         pdf.setTextColor(255, 255, 255);
         pdf.setFontSize(7);
-        pdf.text("Wholeness House Gwagwalada, FCT, Nigeria | office@cmdanigeria.org | +234 803 304 3290", pdfWidth / 2, pdfHeight - 3, { align: "center" });
+        pdf.text(
+          "Wholeness House Gwagwalada, FCT, Nigeria | office@cmdanigeria.org | +234 803 304 3290",
+          pdfWidth / 2,
+          pdfHeight - 3,
+          { align: "center" }
+        );
       };
 
       // Content area (excluding header and footer)
@@ -151,17 +160,7 @@ const ServiceSubscriptions = () => {
         const ctx = pageCanvas.getContext("2d");
 
         // Draw the portion of the original canvas
-        ctx.drawImage(
-          canvas,
-          0,
-          sourceY,
-          imgWidth,
-          pageCanvas.height,
-          0,
-          0,
-          imgWidth,
-          pageCanvas.height
-        );
+        ctx.drawImage(canvas, 0, sourceY, imgWidth, pageCanvas.height, 0, 0, imgWidth, pageCanvas.height);
 
         const pageImgData = pageCanvas.toDataURL("image/png");
         const pageImgHeight = Math.min(contentHeight, (imgHeight - sourceY) * ratio);
@@ -337,7 +336,7 @@ const ServiceSubscriptions = () => {
   return (
     <div ref={pageRef} className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="mb-6 flex justify-between items-start">
+      <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:justify-between lg:items-start">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Service Subscriptions</h1>
           <p className="text-gray-600 mt-2">
@@ -743,9 +742,7 @@ const ServiceSubscriptions = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Recipient Email (optional)
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Recipient Email (optional)</label>
                 <input
                   type="email"
                   value={invoiceEmail}

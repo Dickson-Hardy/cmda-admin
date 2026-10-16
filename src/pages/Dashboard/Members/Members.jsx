@@ -90,7 +90,7 @@ const Members = () => {
     <div>
       <PageHeader title="Members" subtitle="Manage all students, doctors & global network members" />
 
-      <div className="grid grid-cols-4 gap-6 mt-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mt-6">
         {memberStats.map((stat) => (
           <div
             key={stat.label}
@@ -103,9 +103,9 @@ const Members = () => {
       </div>
 
       <section className="bg-white shadow rounded-xl pt-6 mt-8">
-        <div className="flex items-center justify-between gap-6 px-6 mb-3">
+        <div className="flex flex-col gap-3 px-4 sm:px-6 mb-3">
           <h3 className="font-bold text-base">All Members</h3>
-          <div className="flex justify-end items-end gap-4 mb-4">
+          <div className="flex flex-wrap items-center gap-3">
             <Button
               label="Onboarding Analytics"
               onClick={() => navigate("/members/analytics")}
@@ -117,23 +117,11 @@ const Members = () => {
               onClick={() => navigate("/members/lifetime-import")}
               variant="outlined"
             />
-            <Button label="Export" loading={isExporting} className="ml-auto" onClick={handleExport} />
-            <Button
-              label="Filter"
-              className="ml-auto"
-              onClick={() => setOpenFilter(true)}
-              icon={icons.filter}
-              variant="outlined"
-            />
-            <SearchBar
-              onSearch={(v) => {
-                setSearchBy(v);
-                setCurrentPage(1);
-              }}
-            />
+            <Button label="Export" loading={isExporting} onClick={handleExport} />
+            <Button label="Filter" onClick={() => setOpenFilter(true)} icon={icons.filter} variant="outlined" />
           </div>
         </div>
-        <div className="flex justify-between gap-4 px-6 mb-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between gap-3 px-4 sm:px-6 mb-6">
           <SearchBar
             onSearch={(v) => {
               setSearchBy(v);

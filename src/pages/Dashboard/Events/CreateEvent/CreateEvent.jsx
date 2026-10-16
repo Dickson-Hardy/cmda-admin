@@ -150,7 +150,9 @@ const CreateEvent = () => {
       }
     }
 
-    const configuredAccommodationOptions = (payload.accommodationOptions || []).filter((option) => option?.name?.trim());
+    const configuredAccommodationOptions = (payload.accommodationOptions || []).filter((option) =>
+      option?.name?.trim()
+    );
     const missingAccommodationPrice = configuredAccommodationOptions.find(
       (option) =>
         option.isPriced &&
@@ -161,21 +163,20 @@ const CreateEvent = () => {
       return toast.error(`Add an NGN or USD price for ${missingAccommodationPrice.name}`);
     }
 
-    const accommodationOptions = configuredAccommodationOptions
-      .map((option) => {
-        const isPriced = Boolean(option.isPriced);
-        const priceNgn = option.priceNgn === "" || option.priceNgn == null ? undefined : Number(option.priceNgn);
-        const priceUsd = option.priceUsd === "" || option.priceUsd == null ? undefined : Number(option.priceUsd);
+    const accommodationOptions = configuredAccommodationOptions.map((option) => {
+      const isPriced = Boolean(option.isPriced);
+      const priceNgn = option.priceNgn === "" || option.priceNgn == null ? undefined : Number(option.priceNgn);
+      const priceUsd = option.priceUsd === "" || option.priceUsd == null ? undefined : Number(option.priceUsd);
 
-        return {
-          id: option.id,
-          name: option.name.trim(),
-          description: option.description?.trim() || "",
-          isPriced,
-          ...(isPriced && priceNgn !== undefined ? { priceNgn } : {}),
-          ...(isPriced && priceUsd !== undefined ? { priceUsd } : {}),
-        };
-      });
+      return {
+        id: option.id,
+        name: option.name.trim(),
+        description: option.description?.trim() || "",
+        isPriced,
+        ...(isPriced && priceNgn !== undefined ? { priceNgn } : {}),
+        ...(isPriced && priceUsd !== undefined ? { priceUsd } : {}),
+      };
+    });
 
     const registrationFields = (payload.registrationFields || [])
       .filter((field) => field?.label?.trim())
@@ -322,8 +323,8 @@ const CreateEvent = () => {
           {slug ? "Edit" : "Create"} {isConference ? "Conference" : "Event"}
         </h3>
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4 gap-x-6">
-            <div className="col-span-2">
+          <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-4 gap-x-6">
+            <div className="col-span-full">
               <div className="flex items-center gap-4 mb-1 p-4 bg-purple-50 rounded-lg border border-purple-200">
                 <label className="flex items-center gap-2">
                   <input
@@ -340,7 +341,7 @@ const CreateEvent = () => {
             </div>
 
             {/* Conference Type Toggle */}
-            <div className={`col-span-2 ${isExternalProgram ? "hidden" : ""}`}>
+            <div className={`col-span-full ${isExternalProgram ? "hidden" : ""}`}>
               <div className="flex items-center gap-4 mb-4 p-4 bg-gray-50 rounded-lg">
                 <label className="flex items-center gap-2">
                   <input type="checkbox" {...register("isConference")} className="form-checkbox h-4 w-4 text-primary" />
@@ -349,7 +350,7 @@ const CreateEvent = () => {
               </div>
             </div>
             {/* Subscription Requirement Toggle */}
-            <div className={`col-span-2 ${isExternalProgram ? "hidden" : ""}`}>
+            <div className={`col-span-full ${isExternalProgram ? "hidden" : ""}`}>
               <div className="flex items-center gap-4 mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <label className="flex items-center gap-2">
                   <input
@@ -434,7 +435,7 @@ const CreateEvent = () => {
                 <DynamicRegistrationFields />
               </>
             )}
-            <div className="col-span-2">
+            <div className="col-span-full">
               <p className="text-sm font-semibold mb-1">
                 Featured Image <span className="text-error">*</span>
               </p>
@@ -451,9 +452,9 @@ const CreateEvent = () => {
                 <input type="file" accept="image/*" hidden id="image" name="image" onChange={handlePreview} />
               </div>
             </div>
-            <TextInput label="name" register={register} errors={errors} required divClassName="col-span-2" />
+            <TextInput label="name" register={register} errors={errors} required divClassName="col-span-full" />
             {!isExternalProgram && (
-              <TextArea label="description" register={register} errors={errors} divClassName="col-span-2" />
+              <TextArea label="description" register={register} errors={errors} divClassName="col-span-full" />
             )}
             <Select
               label="eventType"
@@ -505,7 +506,7 @@ const CreateEvent = () => {
             {/* Virtual Meeting Info Section */}
             {!isExternalProgram && (watch("eventType") === "Virtual" || watch("eventType") === "Hybrid") && (
               <>
-                <div className="col-span-2 mt-4 mb-2">
+                <div className="col-span-full mt-4 mb-2">
                   <h4 className="font-semibold text-base text-gray-700 border-b pb-2">Virtual Meeting Details</h4>
                   <p className="text-xs text-gray-500 mt-1">Provide structured meeting information for easy access</p>
                 </div>
@@ -553,7 +554,7 @@ const CreateEvent = () => {
                   errors={errors}
                   placeholder="+1 234 567 8900"
                   required={false}
-                  divClassName="col-span-2"
+                  divClassName="col-span-full"
                 />
                 <TextArea
                   label="virtualMeetingInstructions"
@@ -563,7 +564,7 @@ const CreateEvent = () => {
                   placeholder="Please join 5 minutes early for audio check"
                   rows={2}
                   required={false}
-                  divClassName="col-span-2"
+                  divClassName="col-span-full"
                 />
               </>
             )}
@@ -573,9 +574,9 @@ const CreateEvent = () => {
               register={register}
               rows={2}
               required={false}
-              divClassName="col-span-2"
+              divClassName="col-span-full"
             />
-            <div className="flex justify-end col-span-2">
+            <div className="flex justify-end col-span-full">
               <Button
                 label={slug ? "Save Changes" : "Submit"}
                 type="submit"

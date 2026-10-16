@@ -15,7 +15,7 @@ const SearchBar = ({
         e.preventDefault();
         onSearch(inputValue);
       }}
-      className={classNames("max-w-md", className)}
+      className={classNames("w-full min-w-0 max-w-md", className)}
     >
       <div className="relative w-full">
         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-500">

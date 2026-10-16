@@ -44,9 +44,9 @@ const Devotionals = () => {
             ? new Date(devotional.scheduledFor || devotional.createdAt) <= new Date()
               ? "Published"
               : "Scheduled"
-        : col.accessor === "updatedAt"
-          ? formatDate(value).date
-          : value;
+            : col.accessor === "updatedAt"
+              ? formatDate(value).date
+              : value;
     },
     enableSorting: false,
   }));
@@ -96,7 +96,7 @@ const Devotionals = () => {
       />
 
       <section className="bg-white shadow rounded-xl pt-6 mt-8">
-        <div className="flex items-center justify-between gap-6 px-6 pb-6">
+        <div className="flex flex-col gap-3 px-4 pb-6 sm:px-6 xl:flex-row xl:items-center xl:justify-between">
           <h3 className="font-bold text-base">All Devotionals</h3>
         </div>
 

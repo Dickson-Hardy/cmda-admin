@@ -121,8 +121,12 @@ const CreateProductPage = () => {
       <div className="bg-white max-w-screen-lg mx-auto p-6 shadow-sm mt-6 rounded-lg">
         <PageHeader title={product ? "Edit Product" : "Create Product"} />
 
-        <form id="product-form" onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-3 mt-4">
-          <div className="col-span-2">
+        <form
+          id="product-form"
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4"
+        >
+          <div className="col-span-full">
             <p className="text-sm font-semibold mb-1">
               Featured Image <span className="text-error">*</span>
             </p>
@@ -143,10 +147,10 @@ const CreateProductPage = () => {
               <input type="file" accept="image/*" hidden id="image" name="image" onChange={handlePreview} />
             </div>
           </div>
-          <div className="col-span-2">
+          <div className="col-span-full">
             <TextInput label="name" register={register} required errors={errors} />
           </div>
-          <div className="col-span-2">
+          <div className="col-span-full">
             <TextArea label="description" register={register} required errors={errors} rows={3} />
           </div>
           <TextInput
@@ -187,7 +191,7 @@ const CreateProductPage = () => {
 
           <TextInput label="brand" register={register} errors={errors} />
 
-          <div className="col-span-2">
+          <div className="col-span-full">
             <TextInput
               title="Available Sizes (separated by comma)"
               label="sizes"
@@ -197,7 +201,7 @@ const CreateProductPage = () => {
             />
           </div>
 
-          <div className="col-span-2 my-4 flex flex-col">
+          <div className="col-span-full my-4 flex flex-col">
             <h5 className="flex items-center gap-6 text-sm font-semibold">
               Additional Images{" "}
               {!product ? (
@@ -256,7 +260,7 @@ const CreateProductPage = () => {
                         </div>
                       </>
                     )}
-                    <div className="col-span-2">
+                    <div className="col-span-full">
                       <TextInput
                         type="file"
                         label={`additionalImages[${i}].file`}

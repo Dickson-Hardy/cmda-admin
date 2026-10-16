@@ -3,12 +3,14 @@ import Button from "../Button/Button";
 
 const PageHeader = ({ title, subtitle, action, actionIcon, actionLabel }) => {
   return (
-    <header className="flex justify-between items-center">
-      <div>
+    <header className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
+      <div className="min-w-0">
         <h2 className="font-bold text-lg">{title}</h2>
         {subtitle && <p className="text-gray text-sm">{subtitle}</p>}
       </div>
-      {action && <Button icon={actionIcon || icons.plus} label={actionLabel} onClick={action} />}
+      {action && (
+        <Button className="w-full sm:w-auto" icon={actionIcon || icons.plus} label={actionLabel} onClick={action} />
+      )}
     </header>
   );
 };

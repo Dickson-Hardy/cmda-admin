@@ -9,7 +9,7 @@ const persistConfig = {
   storage,
   whitelist: ["auth"],
   version: 2,
-  migrate: (state) => Promise.resolve(state ? { ...state, token: undefined, api: undefined } : state),
+  migrate: (state) => Promise.resolve(state ? { auth: state.auth, _persist: state._persist } : state),
 };
 
 // Remove the legacy persisted tree because it may contain credentials and unrelated Redux slices.

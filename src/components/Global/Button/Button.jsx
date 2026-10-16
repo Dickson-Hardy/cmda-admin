@@ -62,11 +62,12 @@ const Button = ({
     <button
       type={type}
       disabled={disabled || loading}
+      aria-busy={loading || undefined}
       className={classNames(
-        "inline-flex justify-center items-center gap-2.5 rounded-md font-medium  text-sm",
-        large ? "h-12 py-4 px-8" : small ? "h-8 py-3 px-3" : "h-10 py-4 px-8",
+        "inline-flex max-w-full justify-center items-center gap-2.5 rounded-md font-medium text-sm text-center leading-5",
+        large ? "min-h-12 py-3 px-6" : small ? "min-h-8 py-1.5 px-3" : "min-h-10 py-2.5 px-5",
         variant === "filled" && colorStyles.filled,
-        variant === "outlined" && colorStyles.outlined,
+        (variant === "outlined" || variant === "outline") && colorStyles.outlined,
         variant === "text" && colorStyles.text,
         "disabled:cursor-not-allowed",
         disabled && "bg-opacity-50",
@@ -86,8 +87,8 @@ const Button = ({
         <Loading height={20} width={20} />
       ) : (
         <>
-          {icon && <span className={classNames("text-base", iconClassName)}>{icon}</span>}
-          {children || label}
+          {icon && <span className={classNames("shrink-0 text-base", iconClassName)}>{icon}</span>}
+          <span className="min-w-0 break-words">{children || label}</span>
         </>
       )}
       {loading && loadingText ? loadingText : null}

@@ -67,7 +67,7 @@ const Resources = () => {
       </div>
 
       <section className="my-8">
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
           {allResources?.items?.map((res) => (
             <Link key={res.slug} to={`/resources/${res.slug}`}>
               <ItemCard

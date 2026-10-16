@@ -56,7 +56,7 @@ const Events = () => {
         actionLabel="New Event"
       />
 
-      <div className="grid grid-cols-4 gap-6 gap-y-4 mt-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mt-8">
         {eventStats.map((stat) => (
           <div
             key={stat.label}
@@ -69,7 +69,7 @@ const Events = () => {
       </div>
 
       <section className="my-8">
-        <div className="flex justify-end items-end gap-4 mb-4">
+        <div className="flex flex-wrap justify-end items-end gap-3 mb-4">
           <Button
             label="Filter"
             className="ml-auto"
@@ -90,7 +90,7 @@ const Events = () => {
             <Loading height={64} width={64} className="text-primary" />
           </div>
         ) : allEvents?.items?.length ? (
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
             {allEvents?.items?.map((evt) => (
               <Link key={evt?._id} to={`/events/${evt.slug}`}>
                 <ItemCard

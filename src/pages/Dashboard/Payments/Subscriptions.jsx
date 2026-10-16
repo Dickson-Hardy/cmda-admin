@@ -222,9 +222,9 @@ const Subscriptions = () => {
       </div>
 
       <section className="bg-white shadow rounded-xl pt-6 mt-8">
-        <div className="flex items-center justify-between gap-6 px-6 pb-6">
+        <div className="flex flex-col gap-3 px-4 pb-6 sm:px-6 xl:flex-row xl:items-center xl:justify-between">
           <h3 className="font-bold text-base">All Subscriptions</h3>
-          <div className="flex justify-end items-end gap-4 mb-4">
+          <div className="flex flex-wrap items-end gap-3">
             <Button label="Export" loading={isExporting} className="ml-auto" onClick={handleExport} />
             <Button
               label="Filter"

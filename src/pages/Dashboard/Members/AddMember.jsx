@@ -96,13 +96,13 @@ const AddMember = () => {
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white rounded-lg p-6 w-full shadow-sm max-w-screen-md grid grid-cols-2 gap-6"
+        className="bg-white rounded-lg p-6 w-full shadow-sm max-w-screen-md grid grid-cols-1 sm:grid-cols-2 gap-6"
       >
-        <div className="col-span-2">
+        <div className="col-span-full">
           <h2 className="text-xl font-bold">{edit ? `Edit ${member?.role}` : `Add New`} Member</h2>
         </div>
         {!edit && (
-          <div className="col-span-2">
+          <div className="col-span-full">
             <RadioGroup
               title="Select Member Type"
               label="role"
@@ -156,9 +156,7 @@ const AddMember = () => {
             type="date"
             max={fourteenYrsAgo}
           />
-          <p className="text-xs text-gray-500 mt-1">
-            Date of birth can be added later by the member
-          </p>
+          <p className="text-xs text-gray-500 mt-1">Date of birth can be added later by the member</p>
         </div>
 
         <div className="w-full">
@@ -175,7 +173,7 @@ const AddMember = () => {
         <div>
           <TextInput type="tel" title="Phone number (optional)" label="phone" register={register} errors={errors} />
         </div>
-        <div className="col-span-2">
+        <div className="col-span-full">
           <TextInput
             title="Email Address"
             label="email"
@@ -189,7 +187,7 @@ const AddMember = () => {
           />
         </div>
 
-        <div className="col-span-2">
+        <div className="col-span-full">
           <Select
             label="region"
             control={control}
@@ -208,7 +206,7 @@ const AddMember = () => {
         </div>
 
         {!edit && (
-          <div className="col-span-2">
+          <div className="col-span-full">
             <Select
               label="memberCategory"
               control={control}
@@ -297,7 +295,7 @@ const AddMember = () => {
           </>
         ) : null}
 
-        <div className="col-span-2">
+        <div className="col-span-full">
           {!edit && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
               <p className="text-sm text-blue-800">

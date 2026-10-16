@@ -56,7 +56,7 @@ const VolunteerJobs = () => {
             }}
           />
         </div>
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {allVolunteerJobs?.items?.map((job) => (
             <Link key={job._id} to={`/others/jobs/${job._id}`}>
               <div className="rounded-xl border bg-white px-4 py-4 flex gap-4 items-center">

@@ -96,9 +96,9 @@ const Trainings = () => {
       </div>
 
       <section className="bg-white shadow rounded-xl pt-6 mt-8">
-        <div className="flex items-center justify-between gap-6 px-6">
+        <div className="flex flex-col gap-3 px-4 sm:px-6 xl:flex-row xl:items-center xl:justify-between">
           <h3 className="font-bold text-base">All Trainings</h3>
-          <div className="flex justify-end items-center gap-4 mb-4">
+          <div className="flex flex-wrap items-center gap-3 mb-4">
             <Button
               label="Filter"
               className="ml-auto"
