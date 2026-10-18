@@ -30,6 +30,7 @@ export const NAV_LINKS = [
     children: [
       { title: "Orders", link: "/payments/orders", role: "FinanceManager" },
       { title: "Subscriptions", link: "/payments/subscriptions", role: "FinanceManager" },
+      { title: "Zelle Transfers", link: "/payments/zelle", role: "FinanceManager" },
       { title: "Donations", link: "/payments/donations", role: "FinanceManager" },
       {
         title: "Pending Registrations",

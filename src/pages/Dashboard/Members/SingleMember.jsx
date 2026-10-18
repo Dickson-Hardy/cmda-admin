@@ -29,7 +29,7 @@ const SingleMember = () => {
     ["uk/europe region", "uk/europe", "global europe"].includes(member?.region?.trim().toLowerCase());
   const { data: subscriptionStatus, isLoading: isLoadingSubscriptionStatus } = useGetMemberSubscriptionStatusQuery(
     member?._id,
-    { skip: !member?._id || !isUkEuropeMember }
+    { skip: !member?._id || member?.role !== "GlobalNetwork" }
   );
   const [deleteMember, { isLoading: isDeleting }] = useDeleteMemberByIdMutation();
   const [openDelete, setOpenDelete] = useState(false);
@@ -120,20 +120,20 @@ const SingleMember = () => {
           }),
       accountStatus: member?.emailVerified ? "Verified" : "Unverified",
       subscriptionStatus: member?.subscribed ? "Subscribed" : "Not Subscribed",
-      ...(isUkEuropeMember && subscriptionStatus
+      ...(subscriptionStatus?.annualTarget
         ? {
-            ukSubscriptionProgress: `${formatCurrency(subscriptionStatus.paidAmount, "GBP")} of ${formatCurrency(
+            subscriptionProgress: `${formatCurrency(subscriptionStatus.paidAmount, subscriptionStatus.currency)} of ${formatCurrency(
               subscriptionStatus.annualTarget,
-              "GBP"
+              subscriptionStatus.currency
             )}`,
-            ukSubscriptionRemaining: formatCurrency(subscriptionStatus.remainingAmount, "GBP"),
+            subscriptionRemaining: formatCurrency(subscriptionStatus.remainingAmount, subscriptionStatus.currency),
           }
         : {}),
       lifetimeMembership: member?.hasLifetimeMembership ? `Yes (${member?.lifetimeMembershipType})` : "No",
       subscriptionExpiry: member?.subscriptionExpiry ? formatDate(member?.subscriptionExpiry).date : "N/A",
       memberSince: formatDate(member?.createdAt).dateTime,
     }),
-    [isUkEuropeMember, member, subscriptionStatus]
+    [member, subscriptionStatus]
   );
 
   return (

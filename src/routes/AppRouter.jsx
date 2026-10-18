@@ -42,6 +42,7 @@ import SystemSettings from "~/pages/Dashboard/Settings/SystemSettings";
 import Notifications from "~/pages/Dashboard/Notifications/Notifications";
 import ProjectDeliverables from "~/pages/Dashboard/ProjectDeliverables/ProjectDeliverables";
 import ServiceSubscriptions from "~/pages/Dashboard/ServiceSubscriptions/ServiceSubscriptions";
+import ZellePayments from "~/pages/Dashboard/Payments/ZellePayments";
 
 export default function AppRouter() {
   const isAuthenticated = true;
@@ -72,6 +73,10 @@ export default function AppRouter() {
           children: [
             { index: true, element: <DashboardHomePage /> },
             { path: "events", element: <AdminDashboardEventsPage /> },
+            {
+              element: <ProtectedRoutes restrictedRoles={["MemberManager"]} />,
+              children: [{ path: "payments/zelle", element: <ZellePayments /> }],
+            },
             { path: "events/create-event", element: <AdminDashboardCreateEvent /> },
             { path: "events/:slug", element: <AdminDashboardStoreSingleEventPage /> },
             { path: "conferences", element: <AdminDashboardConferencesPage /> },
