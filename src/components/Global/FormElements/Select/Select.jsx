@@ -22,7 +22,7 @@ const Select = ({
   return (
     <div>
       {showTitleLabel && (
-        <label htmlFor={label} className="block mb-1 text-sm font-semibold text-black">
+        <label htmlFor={`${label}-input`} className="block mb-1 text-sm font-semibold text-black">
           {title || convertToCapitalizedWords(label)}
           {required ? <span className="text-error ml-px">*</span> : null}
         </label>
@@ -34,10 +34,12 @@ const Select = ({
           <ReactSelect
             unstyled
             id={label}
+            inputId={`${label}-input`}
             value={value ? options.find((option) => option.value === value) : null}
             onChange={(selectedOption) => {
-              onChange(multiple ? selectedOption.map((x) => x.value) : selectedOption.value);
-              onSelect(multiple ? selectedOption.map((x) => x.value) : selectedOption.value);
+              const next = multiple ? (selectedOption || []).map((x) => x.value) : (selectedOption?.value ?? "");
+              onChange(next);
+              onSelect(next);
             }}
             onBlur={onBlur}
             placeholder={placeholder}
@@ -47,7 +49,7 @@ const Select = ({
             className="cursor-pointer"
             isMulti={multiple}
             // adding disbaled property
-            disabled={disabled}
+            isDisabled={disabled}
             classNames={{
               control: (state) =>
                 classNames(

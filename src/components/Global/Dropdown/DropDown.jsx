@@ -1,5 +1,5 @@
 import { classNames } from "~/utilities/classNames";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { cloneElement, isValidElement, useId, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const useOutsideAlerter = (ref, setX) => {
   useEffect(() => {
@@ -21,9 +21,21 @@ const useOutsideAlerter = (ref, setX) => {
 const Dropdown = ({ toggleElement, children, className }) => {
   const wrapperRef = useRef(null);
   const toggleRef = useRef(null);
+  const triggerRef = useRef(null);
+  const id = useId();
   const [openWrapper, setOpenWrapper] = useState(false);
   const [positionClass, setPositionClass] = useState("");
   useOutsideAlerter(wrapperRef, setOpenWrapper);
+  useEffect(() => {
+    const handleKey = (event) => {
+      if (openWrapper && event.key === "Escape") {
+        setOpenWrapper(false);
+        triggerRef.current?.querySelector("button,[role=button]")?.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [openWrapper]);
 
   const determinePosition = useCallback(() => {
     const toggleRect = toggleRef.current?.getBoundingClientRect();
@@ -53,13 +65,38 @@ const Dropdown = ({ toggleElement, children, className }) => {
     determinePosition();
   }, [determinePosition]);
 
+  const nativeButton = isValidElement(toggleElement) && toggleElement.type === "button";
+  const control = isValidElement(toggleElement) ? (
+    cloneElement(toggleElement, {
+      "aria-expanded": openWrapper,
+      "aria-controls": id,
+      ...(nativeButton ? { type: "button" } : { role: "button", tabIndex: 0 }),
+      onClick: (event) => {
+        toggleElement.props.onClick?.(event);
+        setOpenWrapper((previous) => !previous);
+      },
+      onKeyDown: (event) => {
+        if (!nativeButton && ["Enter", " "].includes(event.key)) {
+          event.preventDefault();
+          setOpenWrapper((previous) => !previous);
+        }
+      },
+    })
+  ) : (
+    <button type="button" aria-expanded={openWrapper} aria-controls={id} onClick={() => setOpenWrapper(!openWrapper)}>
+      {toggleElement}
+    </button>
+  );
+
   return (
     <div ref={wrapperRef} className="relative select-none">
-      <div onMouseDown={() => setOpenWrapper(!openWrapper)} className="inline-block cursor-pointer">
-        {toggleElement}
+      <div ref={triggerRef} className="inline-block cursor-pointer">
+        {control}
       </div>
       <div
         ref={toggleRef}
+        id={id}
+        style={{ visibility: openWrapper ? "visible" : "hidden" }}
         className={classNames(
           "absolute z-[2] transition-all duration-300 ease-in-out min-w-full",
           openWrapper ? "scale-100" : "scale-0",

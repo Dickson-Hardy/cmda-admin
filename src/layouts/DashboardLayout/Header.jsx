@@ -13,6 +13,7 @@ const Header = ({ onToggleSidebar, unreadMessagesCount }) => {
   const { user } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
+    if (!window.confirm("Log out of your CMDA account?")) return;
     window.location.href = "/login";
     dispatch(clearTokens());
     dispatch(setUser(null));
@@ -74,11 +75,14 @@ const Header = ({ onToggleSidebar, unreadMessagesCount }) => {
                 <span className="text-lg">{icons.settings}</span> My Profile
               </NavLink>
             </li>
-            <li
-              className="flex gap-3 items-center text-black cursor-pointer border-t px-5 py-2 hover:bg-onPrimary transition-all"
-              onClick={handleLogout}
-            >
-              <span className="text-lg">{icons.logout}</span> Logout
+            <li>
+              <button
+                type="button"
+                className="flex gap-3 items-center text-black cursor-pointer border-t px-5 py-2 hover:bg-onPrimary transition-all"
+                onClick={handleLogout}
+              >
+                <span className="text-lg">{icons.logout}</span> Logout
+              </button>
             </li>
           </ul>
         </Dropdown>

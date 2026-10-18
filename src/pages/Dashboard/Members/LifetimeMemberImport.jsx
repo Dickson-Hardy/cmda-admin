@@ -30,6 +30,9 @@ const LifetimeMemberImport = () => {
     try {
       const rows = await parseLifetimeMembersSheet(file);
       const result = await previewImport({ fileName: file.name, rows }).unwrap();
+      if (!result?.rows || !result?.counts) {
+        throw new Error("Unexpected response from the server. Please refresh and try again.");
+      }
       setPreview(result);
       setSelected(
         Object.fromEntries(
@@ -113,11 +116,11 @@ const LifetimeMemberImport = () => {
           <div className="mt-8">
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
               {[
-                ["Rows", preview.total],
-                ["Matched", preview.counts.matched],
-                ["Needs review", preview.counts.ambiguous],
-                ["Unmatched", preview.counts.unmatched],
-                ["Invalid", preview.counts.invalid],
+                ["Rows", preview.total ?? 0],
+                ["Matched", preview.counts?.matched ?? 0],
+                ["Needs review", preview.counts?.ambiguous ?? 0],
+                ["Unmatched", preview.counts?.unmatched ?? 0],
+                ["Invalid", preview.counts?.invalid ?? 0],
               ].map(([label, value]) => (
                 <div key={label} className="border rounded-lg p-3">
                   <p className="text-xs text-gray-500 uppercase">{label}</p>
@@ -139,7 +142,7 @@ const LifetimeMemberImport = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {preview.rows.map((row) => {
+                  {(preview.rows || []).map((row) => {
                     const candidates = row.status === "matched" ? [row.match] : row.candidates || [];
                     const selectedUserId = selected[row.rowNumber] || "";
                     const selectedCandidate = candidates.find((candidate) => candidate.userId === selectedUserId);
