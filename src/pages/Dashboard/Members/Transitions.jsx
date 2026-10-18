@@ -39,7 +39,7 @@ const Transitions = () => {
         <StatusChip status={value} />
       ) : col.accessor === "user.fullName" ? (
         <span>
-          {value} <br /> {item.user.role?.toUpperCase()}
+          {value || "--"} <br /> {item.user?.role?.toUpperCase() || "UNKNOWN"}
         </span>
       ) : col.accessor === "updatedAt" ? (
         formatDate(value).date

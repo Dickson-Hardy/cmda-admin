@@ -66,9 +66,11 @@ const membersApi = api.injectEndpoints({
     }),
     previewLifetimeMemberImport: build.mutation({
       query: (body) => ({ url: "/admin/members/lifetime-import/preview", method: "POST", body }),
+      transformResponse: (response) => response.data,
     }),
     confirmLifetimeMemberImport: build.mutation({
       query: (body) => ({ url: "/admin/members/lifetime-import/confirm", method: "POST", body }),
+      transformResponse: (response) => response.data,
       invalidatesTags: ["MEMBERS", "MEMBERS_STATS"],
     }),
     updateMember: build.mutation({
