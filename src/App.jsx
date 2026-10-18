@@ -23,15 +23,16 @@ export default function App() {
 
         <ToastContainer
           position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
+          autoClose={6000}
+          hideProgressBar
+          limit={2}
           newestOnTop={true}
           closeOnClick
           rtl={false}
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="colored"
+          theme="light"
         />
       </PersistGate>
     </Provider>

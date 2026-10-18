@@ -16,6 +16,7 @@ import MiniPagination from "~/components/Global/MiniPagination/MiniPagination";
 import { useBroadcastMessageMutation } from "~/redux/api/chatsApi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const SendNewMessage = ({ refetchContacts }) => {
   const [openModal, setOpenModal] = useState(false);
@@ -63,7 +64,7 @@ const SendNewMessage = ({ refetchContacts }) => {
       await refetchContacts();
       toast.success("Broadcast message sent");
     } catch (error) {
-      toast.error(error?.data?.message || "Broadcast could not be sent. Please try again.");
+      toast.error(getApiErrorMessage(error, "Broadcast could not be sent. Please try again."));
     }
   };
 

@@ -33,31 +33,8 @@ const DashboardMessagingPage = () => {
         <SendNewMessage refetchContacts={refetchContacts} />
       </div>
 
-      {/* large screen */}
-      <section className="gap-10 h-[calc(100vh-190px)] hidden lg:flex">
-        {/* messages Lists */}
-        <ContactList
-          allContacts={allContacts}
-          isLoading={isLoadingContacts}
-          hasMore={hasMore}
-          onLoadMore={handleLoadMore}
-          isLoadingMore={isFetchingContacts && page > 1}
-        />
-
-        {/* Chatbox */}
-        {recipientId ? (
-          <ChatBox userId={"admin"} recipientId={recipientId} refetchContacts={refetchContacts} />
-        ) : (
-          <div className="w-3/5 flex flex-col justify-center items-center">
-            <p className="font-bold text-lg text-center cursor-not-allowed">Select A User to start chatting with</p>
-          </div>
-        )}
-      </section>
-
-      {/* small screen  */}
-      <section className=" gap-10 h-[calc(100vh-190px)] lg:hidden flex">
-        {/* messages Lists */}
-        {!recipientId && (
+      <section className="gap-10 h-[calc(100vh-190px)] flex">
+        <div className={recipientId ? "hidden lg:contents" : "contents"}>
           <ContactList
             allContacts={allContacts}
             isLoading={isLoadingContacts}
@@ -65,10 +42,14 @@ const DashboardMessagingPage = () => {
             onLoadMore={handleLoadMore}
             isLoadingMore={isFetchingContacts && page > 1}
           />
+        </div>
+        {recipientId ? (
+          <ChatBox key={recipientId} userId="admin" recipientId={recipientId} />
+        ) : (
+          <div className="hidden lg:flex w-3/5 flex-col justify-center items-center">
+            <p className="font-bold text-lg text-center">Select a member to start a conversation.</p>
+          </div>
         )}
-
-        {/* Chatbox */}
-        {recipientId && <ChatBox userId={"admin"} recipientId={recipientId} refetchContacts={refetchContacts} />}
       </section>
     </div>
   );

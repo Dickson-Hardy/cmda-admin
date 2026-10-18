@@ -36,7 +36,7 @@ const baseQueryWithRefresh = async (args, apiContext, extraOptions) => {
       apiContext.dispatch(logout());
     }
   }
-  return result;
+  return { ...result, meta: { ...result.meta, handlesError: Boolean(extraOptions?.handlesError) } };
 };
 
 export const api = createApi({
@@ -46,6 +46,7 @@ export const api = createApi({
   keepUnusedDataFor: 0.0001,
   endpoints: () => ({}),
   tagTypes: [
+    "SUPPORT",
     "DEVOTIONALS",
     "EMAIL_LOGS",
     "ADMIN_NOTIFICATIONS",

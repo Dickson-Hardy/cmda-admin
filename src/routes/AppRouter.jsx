@@ -43,6 +43,7 @@ import Notifications from "~/pages/Dashboard/Notifications/Notifications";
 import ProjectDeliverables from "~/pages/Dashboard/ProjectDeliverables/ProjectDeliverables";
 import ServiceSubscriptions from "~/pages/Dashboard/ServiceSubscriptions/ServiceSubscriptions";
 import ZellePayments from "~/pages/Dashboard/Payments/ZellePayments";
+import SupportInbox from "~/pages/Dashboard/Support/SupportInbox";
 
 export default function AppRouter() {
   const isAuthenticated = true;
@@ -105,6 +106,7 @@ export default function AppRouter() {
               ],
             },
             { path: "messaging", element: <DashboardMessagingPage /> },
+            { path: "support", element: <SupportInbox /> },
             { path: "notifications", element: <Notifications /> },
             { path: "products", element: <Products /> },
             { path: "products/create", element: <CreateProductPage /> },

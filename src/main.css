@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+.Toastify__toast {
+  border: 1px solid #e7e3e6;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px #00000012;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.Toastify__toast-body {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 480px) {
+  .Toastify__toast-container {
+    width: calc(100% - 24px);
+    left: 12px;
+    top: 12px;
+  }
+}
+
 :root {
   --toastify-color-success: #117e45;
   --toastify-color-error: #ff4834;

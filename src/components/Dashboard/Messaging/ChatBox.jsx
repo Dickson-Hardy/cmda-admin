@@ -8,10 +8,12 @@ import Loading from "~/components/Global/Loading/Loading";
 import Message from "./Message";
 import { useGetMemberByIdQuery } from "~/redux/api/membersApi";
 import { useSocket } from "~/utilities/socket";
-import { toast } from "react-toastify";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const ChatBox = ({ userId, recipientId }) => {
   const [inputValue, setInputValue] = useState("");
+  const [sendError, setSendError] = useState("");
+  const clientMessageId = useRef(null);
   const [inputHeight, setInputHeight] = useState(48); // Initial height
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
@@ -20,6 +22,7 @@ const ChatBox = ({ userId, recipientId }) => {
   const {
     data: chatData,
     isLoading,
+    isError: historyError,
     isFetching,
     refetch: refetchHistory,
   } = useGetChatHistoryQuery({ id: recipientId, page, limit: 50 }, { refetchOnMountOrArgChange: true });
@@ -30,6 +33,8 @@ const ChatBox = ({ userId, recipientId }) => {
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
+    clientMessageId.current = null;
+    setSendError("");
     setInputHeight(e.target.scrollHeight);
     if (inputHeight > maxInputHeight) {
       setInputHeight(maxInputHeight);
@@ -44,18 +49,22 @@ const ChatBox = ({ userId, recipientId }) => {
     const content = inputValue.trim();
     if (!content || isSending) return;
 
+    setSendError("");
+    clientMessageId.current ||= crypto.randomUUID();
     try {
       const savedMessage = await sendMessage({
         receiver: recipientId,
         content,
-        clientMessageId: crypto.randomUUID(),
+        clientMessageId: clientMessageId.current,
       }).unwrap();
       setAllMessages((previous) =>
         previous.some((message) => message._id === savedMessage._id) ? previous : [...previous, savedMessage]
       );
       setInputValue("");
+      setInputHeight(48);
+      clientMessageId.current = null;
     } catch (error) {
-      toast.error(error?.data?.message || "Message could not be sent. Please try again.");
+      setSendError(getApiErrorMessage(error, "Your message wasn’t sent. Your draft is safe—please try again."));
     }
   };
 
@@ -178,6 +187,8 @@ const ChatBox = ({ userId, recipientId }) => {
         )}
       </div>
       <div className="bg-white rounded-b-xl p-4 shadow">
+        {historyError ? <p role="alert" className="text-sm text-red-700 mb-3">Messages couldn’t be loaded. <button type="button" className="underline" onClick={refetchHistory}>Try again</button></p> : null}
+        {sendError ? <p id="chat-send-error" role="alert" className="text-sm text-red-700 mb-3">{sendError}</p> : null}
         <form onSubmit={handleSend} className="flex gap-4">
           <textarea
             className={classNames(
@@ -187,15 +198,19 @@ const ChatBox = ({ userId, recipientId }) => {
             )}
             style={{ height: `${inputHeight}px` }}
             placeholder="Your message..."
+            aria-label="Your message"
+            disabled={isSending}
+            aria-describedby={sendError ? "chat-send-error" : undefined}
             onChange={handleInputChange}
             value={inputValue}
             required
           />
           <button
             type="submit"
-            disabled={isSending}
+            disabled={isSending || !inputValue.trim()}
+            aria-label={isSending ? "Sending message" : "Send message"}
             className={classNames(
-              "bg-primary text-white hover:bg-primaryContainer h-12 w-12 p-4 rounded-full shadow-lg",
+              "bg-primary text-white hover:bg-primaryContainer h-12 w-12 shrink-0 p-4 rounded-full shadow-lg disabled:opacity-50",
               "inline-flex justify-center items-center text-2xl cursor-pointer",
               "focus:ring focus:ring-primary/25 focus:outline-none focus:border-transparent transition-all"
             )}

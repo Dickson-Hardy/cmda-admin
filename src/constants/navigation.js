@@ -42,6 +42,7 @@ export const NAV_LINKS = [
   },
   { title: "Products", link: "/products", icon: icons.store },
   { title: "Messaging", link: "/messaging", icon: icons.message },
+  { title: "Complaints & feedback", link: "/support", icon: icons.message },
   { title: "Notifications", link: "/notifications", icon: icons.bell },
   {
     title: "Project Management",

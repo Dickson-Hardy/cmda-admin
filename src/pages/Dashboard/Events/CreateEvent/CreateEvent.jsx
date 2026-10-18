@@ -301,7 +301,7 @@ const CreateEvent = () => {
       updateEvent({ slug, body: formData })
         .unwrap()
         .then((res) => {
-          toast.success("Event UPDATED ssuccessfully");
+          toast.success("Event updated.");
           navigate(`/events/${res.data.slug}`);
         });
     } else {
@@ -309,7 +309,7 @@ const CreateEvent = () => {
       createEvent(formData)
         .unwrap()
         .then((res) => {
-          toast.success("Event CREATED ssuccessfully");
+          toast.success("Event created.");
           navigate(`/events/${res.data.slug}`);
         });
     }

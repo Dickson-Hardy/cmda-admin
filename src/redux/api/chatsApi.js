@@ -52,11 +52,13 @@ const chatsApi = api.injectEndpoints({
       invalidatesTags: ["CONTACTS"],
     }),
     sendMessage: build.mutation({
+      extraOptions: { handlesError: true },
       query: (body) => ({ url: "/chats/messages", method: "POST", body }),
       transformResponse: (response) => response.data,
       invalidatesTags: ["CONTACTS"],
     }),
     broadcastMessage: build.mutation({
+      extraOptions: { handlesError: true },
       query: (body) => ({ url: "/chats/broadcast", method: "POST", body }),
       transformResponse: (response) => response.data,
       invalidatesTags: ["CONTACTS"],
