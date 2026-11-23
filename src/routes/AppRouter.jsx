@@ -44,6 +44,7 @@ import ProjectDeliverables from "~/pages/Dashboard/ProjectDeliverables/ProjectDe
 import ServiceSubscriptions from "~/pages/Dashboard/ServiceSubscriptions/ServiceSubscriptions";
 import ZellePayments from "~/pages/Dashboard/Payments/ZellePayments";
 import SupportInbox from "~/pages/Dashboard/Support/SupportInbox";
+import PaystackSearch from "~/pages/PaystackSearch/PaystackSearch";
 
 export default function AppRouter() {
   const isAuthenticated = true;
@@ -91,6 +92,7 @@ export default function AppRouter() {
                 { path: "subscriptions", element: <Subscriptions /> },
                 { path: "donations", element: <Donations /> },
                 { path: "pending-registrations", element: <PendingRegistrations /> },
+                { path: "paystack-search", element: <PaystackSearch /> },
               ],
             },
             {

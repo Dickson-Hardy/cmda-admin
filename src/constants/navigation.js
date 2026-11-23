@@ -38,6 +38,12 @@ export const NAV_LINKS = [
         icon: icons.refresh,
         role: "FinanceManager",
       },
+      {
+        title: "Payment Probe",
+        link: "/payments/paystack-search",
+        icon: icons.card,
+        role: "FinanceManager",
+      },
     ],
   },
   { title: "Products", link: "/products", icon: icons.store },
