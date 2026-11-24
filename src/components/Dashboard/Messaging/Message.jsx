@@ -5,7 +5,7 @@ const Message = ({ content, timestamp, isSender }) => {
     <div className={`flex my-2 mx-2 ${isSender ? "justify-end" : "justify-start"}`}>
       <div>
         <p
-          className={`${isSender ? "bg-primary text-white" : "bg-white black"} text-sm w-max max-w-[290px] py-2 px-4 rounded-xl text-left shadow`}
+          className={`${isSender ? "bg-primary text-white" : "bg-white text-ink"} text-sm w-max max-w-[290px] py-2 px-4 rounded-xl text-left shadow`}
         >
           {content}
         </p>

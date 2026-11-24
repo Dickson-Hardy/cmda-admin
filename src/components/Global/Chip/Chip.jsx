@@ -39,7 +39,7 @@ const Chip = ({
         // Default to black color styles if an invalid color is provided
         return {
           filled: "bg-black text-white hover:bg-blackContainer",
-          outlined: "bg-transparent text-black border-2 border-black hover:bg-black/10",
+          outlined: "bg-transparent text-ink border-2 border-black hover:bg-black/10",
         };
     }
   };

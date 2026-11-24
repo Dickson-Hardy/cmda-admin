@@ -17,20 +17,16 @@ const AuthLayout = ({ withOutlet = true, children }) => {
       >
         <img src={authImg} className="w-full h-full  z-10 absolute inset-0" />
       </div>
-      <div
-        className={classNames(
-          "h-full w-full flex flex-col items-center p-4 lg:p-8 gap-4 overflow-y-auto",
-          "justify-center"
-        )}
-      >
-        <div className={classNames("w-full px-4 md:px-8 py-8 bg-white  rounded-lg", "max-w-md")}>
-          <Logo />
+      <div className="h-full w-full overflow-y-auto">
+        <div className="min-h-full w-full flex flex-col items-center justify-center gap-6 p-4 sm:p-6 lg:p-8">
+          <div className="w-full max-w-md bg-white rounded-xl shadow-sm px-5 sm:px-8 py-8">
+            <div className="flex justify-center mb-6">
+              <Logo />
+            </div>
+            {withOutlet ? <Outlet /> : children}
+          </div>
+          <p className="text-gray-500 text-sm">&copy;{new Date().getFullYear()} CMDA Nigeria</p>
         </div>
-
-        <div className={classNames("w-full px-4 md:px-8 py-8 bg-white  rounded-lg", "max-w-md")}>
-          {withOutlet ? <Outlet /> : children}
-        </div>
-        <p className="text-gray-500 text-sm">&copy;{new Date().getFullYear()} CMDA Nigeria</p>
       </div>
     </div>
   );

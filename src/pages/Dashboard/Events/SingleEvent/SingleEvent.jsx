@@ -133,7 +133,7 @@ const SingleEvent = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         {/* Main Content */}
-        <section className="bg-white rounded-2xl p-6 shadow w-full md:col-span-2">
+        <section className="bg-white rounded-xl shadow-sm p-6 w-full md:col-span-2">
           <span className="capitalize bg-onTertiary text-tertiary px-4 py-2 rounded-lg text-xs font-semibold mb-4 inline-block">
             {evt?.eventType}
           </span>
@@ -180,7 +180,7 @@ const SingleEvent = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-6 mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
             {evt?.isPaid && evt?.paymentPlans?.length ? (
               <div>
                 <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Payment Plans</h4>{" "}
@@ -201,7 +201,7 @@ const SingleEvent = () => {
               <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Event Date &amp; Time</h4>
               <p className="text-base mb-1">{formatDate(evt?.eventDateTime).dateTime}</p>
             </div>
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <h4 className="text-sm text-gray-600 font-semibold uppercase mb-2">Members Group</h4>
               <p className="flex flex-wrap gap-4">
                 {" "}
@@ -242,17 +242,17 @@ const SingleEvent = () => {
           </div>
 
           <p className="text-gray text-sm mb-4 mt-6">
-            Posted: <span className="text-black font-medium">{formatDate(evt?.createdAt).dateTime}</span>{" "}
+            Posted: <span className="text-ink font-medium">{formatDate(evt?.createdAt).dateTime}</span>{" "}
           </p>
 
-          <div className="flex justify-end gap-6 mt-6">
+          <div className="flex flex-wrap justify-end gap-4 mt-6">
             <Button variant="outlined" color="error" label="Delete Event" onClick={() => setOpenDelete(true)} />
             <Button label="Update Event" onClick={() => navigate(`/events/create-event?slug=${slug}`)} />
           </div>
         </section>
 
         <div>
-          <aside className="w-full shadow sticky top-0 bg-white p-4 rounded-2xl">
+          <aside className="w-full shadow-sm sticky top-0 bg-white p-4 rounded-xl">
             <h3 className="text-base font-bold mb-2">Event Analytics</h3>
             <div className="space-y-4">
               {Object.entries(eventAnalytics).map(([key, val]) => (
@@ -267,10 +267,10 @@ const SingleEvent = () => {
           </aside>
         </div>
 
-        <section className="md:col-span-3 bg-white shadow rounded-xl pt-6 mt-8 overflow-x-hidden">
-          <div className="flex items-center justify-between gap-6 px-6 pb-6">
+        <section className="md:col-span-3 bg-white rounded-xl shadow-sm pt-6 mt-8 overflow-x-hidden">
+          <div className="flex flex-col gap-4 px-6 pb-6 lg:flex-row lg:items-center lg:justify-between">
             <h3 className="font-bold text-base">All Registered Members</h3>
-            <div className="space-x-3 flex">
+            <div className="flex flex-wrap gap-3">
               <Button label="Filter" large onClick={() => setOpenFilter(true)} icon={icons.filter} variant="outlined" />
               <Button label="Export" large onClick={handleExport} icon={icons.download} variant="outlined" />
               <SearchBar onSearch={setSearchBy} />

@@ -11,7 +11,7 @@ const ItemCard = ({ title, category, dateTime, extraText, image }) => {
       <img src={image} className="bg-onPrimary object-cover h-36 w-full rounded-2xl" />
       <div className="space-y-2 text-xs text-gray mt-2">
         <span className="px-2 py-1 text-tertiary font-medium bg-onTertiary rounded-3xl">{category}</span>
-        <h4 className="text-sm font-bold text-black truncate">{title}</h4>
+        <h4 className="text-sm font-bold text-ink truncate">{title}</h4>
         <p>{dateTime}</p>
         {extraText && <p className="truncate">{extraText}</p>}
       </div>

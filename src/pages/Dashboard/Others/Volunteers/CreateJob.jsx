@@ -71,12 +71,12 @@ const CreateVolunteerJob = () => {
     <div>
       <BackButton label="Back to Volunteer" to="/others/jobs" />
 
-      <section className="bg-white rounded-2xl p-6 shadow mt-8">
+      <section className="bg-white rounded-xl shadow-sm p-6 mt-8">
         <h3 className="font-bold text-lg mb-6">{id ? "Edit" : "Add New"} Job</h3>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <TextInput label="title" register={register} errors={errors} required />
           <TextArea label="description" register={register} errors={errors} />
-          <div className="grid grid-cols-2 gap-4 gap-x-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 gap-x-8">
             <div>
               <p className="font-semibold text-sm mb-1.5">
                 Responsibilities <span className="text-error">*</span>
@@ -147,12 +147,12 @@ const CreateVolunteerJob = () => {
             </div>
           </div>
           <TextArea label="applicationInstructions" errors={errors} register={register} rows={2} />
-          <div className="grid grid-cols-2 gap-4 gap-x-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 gap-x-8">
             <TextInput label="companyName" register={register} errors={errors} required />
             <TextInput label="contactEmail" type="email" register={register} errors={errors} required />
           </div>
           <TextInput label="companyLocation" register={register} errors={errors} required />
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <TextInput label="closingDate" type="date" register={register} errors={errors} required />
           </div>
           <div className="flex justify-end pl-8">

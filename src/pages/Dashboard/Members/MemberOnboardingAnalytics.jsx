@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import BackButton from "~/components/Global/BackButton/BackButton";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import Button from "~/components/Global/Button/Button";
 import Loading from "~/components/Global/Loading/Loading";
 import { useGetMemberAnalyticsQuery, useSendPasswordRemindersMutation } from "~/redux/api/membersApi";
@@ -8,6 +9,7 @@ import { useState } from "react";
 
 const MemberOnboardingAnalytics = () => {
   const [page, setPage] = useState(1);
+  const [remindersOpen, setRemindersOpen] = useState(false);
   const pageSize = 20;
   const { data: analytics, isLoading, isFetching, refetch } = useGetMemberAnalyticsQuery({
     page,
@@ -16,17 +18,16 @@ const MemberOnboardingAnalytics = () => {
   const [sendReminders, { isLoading: isSendingReminders }] = useSendPasswordRemindersMutation();
 
   const handleSendReminders = () => {
-    if (window.confirm(`Send password change reminders to ${analytics?.stats?.pendingPasswordChange} members?`)) {
-      sendReminders()
-        .unwrap()
-        .then((result) => {
-          toast.success(`Reminders sent: ${result.data.sent} successful, ${result.data.failed} failed`);
-          refetch();
-        })
-        .catch((error) => {
-          toast.error(error?.data?.message || "Failed to send reminders");
-        });
-    }
+    setRemindersOpen(false);
+    sendReminders()
+      .unwrap()
+      .then((result) => {
+        toast.success(`Reminders sent: ${result.data.sent} successful, ${result.data.failed} failed`);
+        refetch();
+      })
+      .catch((error) => {
+        toast.error(error?.data?.message || "Failed to send reminders");
+      });
   };
 
   if (isLoading) return <Loading />;
@@ -42,7 +43,7 @@ const MemberOnboardingAnalytics = () => {
           <h2 className="text-2xl font-bold">Member Onboarding Analytics</h2>
           <Button
             label="Send Password Reminders"
-            onClick={handleSendReminders}
+            onClick={() => setRemindersOpen(true)}
             loading={isSendingReminders}
             disabled={!analytics?.stats?.pendingPasswordChange}
             icon={icons.send}
@@ -51,9 +52,9 @@ const MemberOnboardingAnalytics = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="text-blue-600 text-sm font-medium mb-1">Total Created</div>
-            <div className="text-3xl font-bold text-blue-900">{analytics?.stats?.totalCreated || 0}</div>
+          <div className="bg-primaryTint border border-onPrimaryContainer rounded-lg p-4">
+            <div className="text-primary text-sm font-medium mb-1">Total Created</div>
+            <div className="text-3xl font-bold text-ink">{analytics?.stats?.totalCreated || 0}</div>
           </div>
 
           <div className="bg-green-50 border border-green-200 rounded-lg p-4">
@@ -62,16 +63,16 @@ const MemberOnboardingAnalytics = () => {
             <div className="text-sm text-green-600 mt-1">{analytics?.emailOpenRate}% open rate</div>
           </div>
 
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-            <div className="text-purple-600 text-sm font-medium mb-1">Password Changed</div>
-            <div className="text-3xl font-bold text-purple-900">{analytics?.stats?.passwordChanged || 0}</div>
-            <div className="text-sm text-purple-600 mt-1">{analytics?.passwordChangeRate}% completion</div>
+          <div className="bg-primaryTint border border-onPrimaryContainer rounded-lg p-4">
+            <div className="text-primary text-sm font-medium mb-1">Password Changed</div>
+            <div className="text-3xl font-bold text-dark">{analytics?.stats?.passwordChanged || 0}</div>
+            <div className="text-sm text-primary mt-1">{analytics?.passwordChangeRate}% completion</div>
           </div>
 
-          <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-            <div className="text-orange-600 text-sm font-medium mb-1">Pending Action</div>
-            <div className="text-3xl font-bold text-orange-900">{analytics?.stats?.pendingPasswordChange || 0}</div>
-            <div className="text-sm text-orange-600 mt-1">Need password change</div>
+          <div className="bg-surface border border-gray-200 rounded-lg p-4">
+            <div className="text-muted text-sm font-medium mb-1">Pending Action</div>
+            <div className="text-3xl font-bold text-ink">{analytics?.stats?.pendingPasswordChange || 0}</div>
+            <div className="text-sm text-muted mt-1">Need password change</div>
           </div>
         </div>
 
@@ -168,6 +169,18 @@ const MemberOnboardingAnalytics = () => {
           )}
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={remindersOpen}
+        onClose={() => setRemindersOpen(false)}
+        icon={icons.send}
+        title="Send password reminders"
+        subtitle={`Send password change reminders to ${analytics?.stats?.pendingPasswordChange || 0} members?`}
+        mainAction={handleSendReminders}
+        mainActionText="Send reminders"
+        mainActionLoading={isSendingReminders}
+        subAction={true}
+      />
     </div>
   );
 };

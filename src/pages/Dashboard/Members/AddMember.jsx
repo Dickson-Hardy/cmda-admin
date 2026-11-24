@@ -297,8 +297,8 @@ const AddMember = () => {
 
         <div className="col-span-full">
           {!edit && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-              <p className="text-sm text-blue-800">
+            <div className="bg-primaryTint border border-onPrimaryContainer rounded-lg p-4 mb-4">
+              <p className="text-sm text-ink">
                 <strong>Note:</strong> A temporary password will be automatically generated and sent to the member's
                 email address. They will be required to change it upon first login.
               </p>

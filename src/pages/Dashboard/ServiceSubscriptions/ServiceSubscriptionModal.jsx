@@ -117,7 +117,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
         {/* Modal Header */}
-        <div className="bg-blue-600 text-white px-6 py-4 flex items-center justify-between">
+        <div className="bg-primary text-white px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <FiServer className="text-2xl" />
             <h2 className="text-xl font-bold">
@@ -169,7 +169,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                   name="serviceName"
                   value={formData.serviceName}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                   placeholder="e.g., CMDA Main Domain"
                   required
                   disabled={isRenewalMode}
@@ -184,7 +184,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                   placeholder="Brief description of the service"
                   rows="2"
                   required
@@ -200,7 +200,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                   required
                   disabled={isRenewalMode}
                 >
@@ -224,7 +224,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                   name="provider"
                   value={formData.provider}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                   placeholder="e.g., GoDaddy, Namecheap, AWS"
                   required
                   disabled={isRenewalMode}
@@ -238,7 +238,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                   name="serviceUrl"
                   value={formData.serviceUrl}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                   placeholder="https://example.com"
                   disabled={isRenewalMode}
                 />
@@ -248,7 +248,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
             {/* Dates and Billing */}
             <div className="border-t pt-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <FiCalendar className="text-blue-600" />
+                <FiCalendar className="text-primary" />
                 Dates & Billing
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -260,7 +260,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                       name="purchaseDate"
                       value={formData.purchaseDate}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                     />
                   </div>
                 )}
@@ -274,7 +274,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                     name="renewalDate"
                     value={formData.renewalDate}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                     required
                   />
                 </div>
@@ -288,7 +288,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                       name="currency"
                       value={formData.currency}
                       onChange={handleChange}
-                      className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                       disabled={isRenewalMode}
                     >
                       <option value="USD">USD</option>
@@ -302,7 +302,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                         onChange={handleChange}
                         step="0.01"
                         min="0"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                         placeholder="0.00"
                         required
                       />
@@ -316,7 +316,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                     name="billingCycle"
                     value={formData.billingCycle}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                     disabled={isRenewalMode}
                   >
                     <option value="monthly">Monthly</option>
@@ -341,7 +341,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                       name="paymentMethod"
                       value={formData.paymentMethod}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                       placeholder="e.g., Credit Card ending in 1234"
                     />
                   </div>
@@ -353,7 +353,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                       name="accountEmail"
                       value={formData.accountEmail}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                       placeholder="account@example.com"
                     />
                   </div>
@@ -365,7 +365,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                       name="accountUsername"
                       value={formData.accountUsername}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                       placeholder="username"
                     />
                   </div>
@@ -376,7 +376,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                       name="status"
                       value={formData.status}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                     >
                       <option value="active">Active</option>
                       <option value="expiring_soon">Expiring Soon</option>
@@ -403,7 +403,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                       onChange={handleChange}
                       min="1"
                       max="90"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                     />
                     <p className="text-xs text-gray-500 mt-1">
                       You'll receive an email alert this many days before renewal
@@ -416,7 +416,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                       name="autoRenewal"
                       checked={formData.autoRenewal}
                       onChange={handleChange}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-primary focus:ring-primary/50 border-gray-300 rounded"
                     />
                     <label className="ml-2 block text-sm text-gray-900">Auto-renewal enabled</label>
                   </div>
@@ -432,7 +432,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
                 value={formData.notes}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                 placeholder={isRenewalMode ? "Add renewal notes..." : "Add any additional notes..."}
               />
             </div>
@@ -452,7 +452,7 @@ const ServiceSubscriptionModal = ({ subscription, onClose }) => {
           <button
             onClick={handleSubmit}
             disabled={isLoading}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-dark transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <>

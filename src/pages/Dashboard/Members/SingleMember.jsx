@@ -169,8 +169,8 @@ const SingleMember = () => {
         <Button label="Edit" onClick={() => navigate(`/members/new?edit=${membershipId}`)} />
       </div>
 
-      <div className="flex gap-8 mt-8">
-        <section className="bg-white-shadow rounded-xl w-full lg:w-2/5">
+      <div className="flex flex-wrap gap-8 mt-8">
+        <section className="bg-white shadow-sm rounded-xl w-full lg:w-2/5">
           <div className="flex justify-center">
             <span className="size-24 bg-onPrimary rounded-full inline-flex items-center justify-center text-6xl text-primary">
               {icons.person}

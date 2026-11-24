@@ -15,7 +15,7 @@ const Switch = ({
   return (
     <div>
       {showTitleLabel && (
-        <div htmlFor={label} className="block mb-1 text-sm font-medium text-black">
+        <div htmlFor={label} className="block mb-1 text-sm font-medium text-ink">
           {title || convertToCapitalizedWords(label)}
         </div>
       )}

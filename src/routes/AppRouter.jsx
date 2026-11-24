@@ -1,9 +1,8 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
 import ErrorElement from "./ErrorElement/ErrorElement";
 import AuthLayout from "~/layouts/AuthLayout/AuthLayout";
 import DashboardLayout from "~/layouts/DashboardLayout/DashboardLayout";
-import EmptyLayout from "~/layouts/EmptyLayout/EmptyLayout";
-import WelcomePage from "~/pages/Welcome";
+import { useSelector } from "react-redux";
 import Login from "~/pages/Auth/Login/Login";
 import ForgotPassword from "~/pages/Auth/ForgotPassword/ForgotPassword";
 import NewPassword from "~/pages/Auth/NewPassword/NewPassword";
@@ -47,7 +46,7 @@ import SupportInbox from "~/pages/Dashboard/Support/SupportInbox";
 import PaystackSearch from "~/pages/PaystackSearch/PaystackSearch";
 
 export default function AppRouter() {
-  const isAuthenticated = true;
+  const isAuthenticated = useSelector((state) => Boolean(state.auth.isAuthenticated));
 
   // Use different layout to display error depending on authentication status
   const ErrorDisplay = () => {
@@ -88,6 +87,7 @@ export default function AppRouter() {
               path: "payments",
               element: <ProtectedRoutes restrictedRoles={["FinanceManager"]} />,
               children: [
+                { index: true, element: <Navigate to="/payments/orders" replace /> },
                 { path: "orders", element: <Orders /> },
                 { path: "subscriptions", element: <Subscriptions /> },
                 { path: "donations", element: <Donations /> },
@@ -156,11 +156,6 @@ export default function AppRouter() {
         { path: "forgot-password", element: <ForgotPassword /> },
         { path: "reset-password", element: <NewPassword /> },
       ],
-    },
-    // Others
-    {
-      element: <EmptyLayout />,
-      children: [{ path: "welcome", element: <WelcomePage /> }],
     },
   ]);
 

@@ -34,10 +34,10 @@ const Notifications = () => {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={classNames(
-              "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
+              "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary/50",
               activeTab === tab.id
-                ? "bg-primary text-white"
-                : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                ? "bg-primary text-white hover:bg-dark"
+                : "bg-white text-muted hover:bg-primaryTint border border-gray-200"
             )}
           >
             <span className="text-base">{tab.icon}</span>

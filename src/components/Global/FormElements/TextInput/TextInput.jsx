@@ -28,7 +28,7 @@ const TextInput = ({
   return (
     <div className={`w-full ${divClassName}`}>
       {showTitleLabel && (
-        <label htmlFor={label} className="block mb-1 text-sm font-semibold text-black">
+        <label htmlFor={label} className="block mb-1 text-sm font-semibold text-ink">
           {title || convertToCapitalizedWords(label)}
           {required ? <span className="text-error ml-px">*</span> : null}
         </label>
@@ -59,7 +59,7 @@ const TextInput = ({
         />
         {type === "password" && (
           <button
-            className="absolute top-3.5 right-3 text-gray group-focus-within:text-black transition-all"
+            className="absolute top-3.5 right-3 text-gray group-focus-within:text-ink transition-all"
             type="button"
             onClick={() => setShowPwd(!showPwd)}
           >

@@ -16,8 +16,8 @@ import formatDate from "~/utilities/fomartDate";
 const Resources = () => {
   const [perPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const { data: allResources } = useGetAllResourcesQuery({ limit: perPage, page: currentPage });
-  const [createResource, { isLoading }] = useCreateResourceMutation();
+  const { data: allResources, isLoading } = useGetAllResourcesQuery({ limit: perPage, page: currentPage });
+  const [createResource, { isLoading: isCreating }] = useCreateResourceMutation();
   const { data: stats } = useGetResourceStatsQuery();
 
   const resourceStats = useMemo(
@@ -57,9 +57,9 @@ const Resources = () => {
         actionLabel="Create Resource"
       />
 
-      <div className="grid  sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
         {Object.entries(resourceStats).map(([key, value]) => (
-          <div key={key} className="p-4 bg-white border rounded-xl">
+          <div key={key} className="p-4 bg-white rounded-xl shadow-sm">
             <h4 className="uppercase text-xs font-medium text-gray mb-3">{convertToCapitalizedWords(key)}</h4>
             <p className="font-bold text-lg">{value || 0}</p>
           </div>
@@ -67,6 +67,9 @@ const Resources = () => {
       </div>
 
       <section className="my-8">
+        {!isLoading && !allResources?.items?.length && (
+          <p className="text-center py-10 text-gray-500">No resources found.</p>
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
           {allResources?.items?.map((res) => (
             <Link key={res.slug} to={`/resources/${res.slug}`}>
@@ -100,7 +103,7 @@ const Resources = () => {
             errors={errors}
           />
           <TextInput label="sourceUrl" register={register} errors={errors} />
-          <Button label="Create New Resource" loading={isLoading} large type="submit" className="w-full" />
+          <Button label="Create New Resource" loading={isCreating} large type="submit" className="w-full" />
         </form>
       </Modal>
     </div>

@@ -60,7 +60,7 @@ const Events = () => {
         {eventStats.map((stat) => (
           <div
             key={stat.label}
-            className={classNames("p-4 border rounded-xl", stat.bgClass, stat.label.includes("Only") && "text-white")}
+            className={classNames("p-4 border rounded-xl shadow-sm", stat.bgClass, stat.label.includes("Only") && "text-white")}
           >
             <h4 className="uppercase text-xs font-medium opacity-70 mb-3">{stat.label}</h4>
             <p className="font-bold text-lg">{Number(stat.value).toLocaleString()}</p>

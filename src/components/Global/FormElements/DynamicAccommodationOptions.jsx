@@ -49,7 +49,7 @@ const DynamicAccommodationOptions = () => {
       </div>
 
       {fields.length > 0 ? (
-        <label className="mt-4 flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm font-medium">
+        <label className="mt-4 flex items-center gap-2 rounded-lg border border-onPrimaryContainer bg-primaryTint p-3 text-sm font-medium">
           <input type="checkbox" {...register("accommodationSelectionRequired")} className="form-checkbox h-4 w-4 text-primary" />
           Require attendees to select an accommodation option before registration
         </label>
@@ -73,7 +73,7 @@ const DynamicAccommodationOptions = () => {
               </div>
 
               <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2">
-                <label className="block text-sm font-semibold text-black">
+                <label className="block text-sm font-semibold text-ink">
                   Name <span className="text-error">*</span>
                   <input
                     {...register(`accommodationOptions.${index}.name`, { required: "Accommodation name is required" })}
@@ -91,7 +91,7 @@ const DynamicAccommodationOptions = () => {
                   Price-tag this option
                 </label>
 
-                <label className="block text-sm font-semibold text-black md:col-span-2">
+                <label className="block text-sm font-semibold text-ink md:col-span-2">
                   Description
                   <textarea
                     {...register(`accommodationOptions.${index}.description`)}
@@ -103,7 +103,7 @@ const DynamicAccommodationOptions = () => {
 
                 {isPriced ? (
                   <>
-                    <label className="block text-sm font-semibold text-black">
+                    <label className="block text-sm font-semibold text-ink">
                       Add-on price (NGN)
                       <input
                         type="number"
@@ -114,7 +114,7 @@ const DynamicAccommodationOptions = () => {
                         placeholder="e.g. 25000"
                       />
                     </label>
-                    <label className="block text-sm font-semibold text-black">
+                    <label className="block text-sm font-semibold text-ink">
                       Add-on price (USD)
                       <input
                         type="number"

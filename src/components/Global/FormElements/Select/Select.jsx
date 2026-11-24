@@ -22,7 +22,7 @@ const Select = ({
   return (
     <div>
       {showTitleLabel && (
-        <label htmlFor={`${label}-input`} className="block mb-1 text-sm font-semibold text-black">
+        <label htmlFor={`${label}-input`} className="block mb-1 text-sm font-semibold text-ink">
           {title || convertToCapitalizedWords(label)}
           {required ? <span className="text-error ml-px">*</span> : null}
         </label>
@@ -75,8 +75,8 @@ const Select = ({
                   state.isSelected
                     ? "bg-primary text-white"
                     : state.isFocused
-                      ? "bg-onPrimary text-black"
-                      : "bg-transparent text-black"
+                      ? "bg-onPrimary text-ink"
+                      : "bg-transparent text-ink"
                 ),
             }}
           />

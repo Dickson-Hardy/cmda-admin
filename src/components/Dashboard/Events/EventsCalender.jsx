@@ -30,7 +30,7 @@ const EventsCalender = ({ showNotifications = true }) => {
       {showNotifications && (
         <div className="mt-4">
           <div className="flex justify-between items-center text-sm mb-2 py-2">
-            <p className="font-semibold text-[#1C1C1C] ">Notifications</p>
+            <p className="font-semibold text-[#333333] ">Notifications</p>
             <span className="text-primary font-medium underline underline-offset-2 cursor-pointer">See all</span>
           </div>
 

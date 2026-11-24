@@ -4,8 +4,8 @@ import { classNames } from "~/utilities/classNames";
 const StatusChip = ({ status }) => {
   // Add new states to either the SUCCESS, ERROR or WARNING array
   const SUCCESS = ["active", "approved", "success", "completed", "yes"];
-  const ERROR = ["error", "declined", "inactive", "failed"];
-  const WARNING = ["pending", "yellow-600", "no"];
+  const ERROR = ["error", "declined", "inactive", "failed", "abandoned", "reversed"];
+  const WARNING = ["pending", "no", "processing"];
 
   const getColorClass = (status) => {
     return SUCCESS.includes(status)

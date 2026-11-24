@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import Loading from "~/components/Global/Loading/Loading";
+import PageHeader from "~/components/Global/PageHeader/PageHeader";
 import StatusChip from "~/components/Global/StatusChip/StatusChip";
 import Table from "~/components/Global/Table/Table";
 import { doctorsRegionLists, globalRegionsData, studentChapterOptions } from "~/constants/regions";
@@ -79,15 +80,14 @@ const OverviewPage = () => {
 
   return (
     <div>
-      <h2 className="font-bold mb-6 text-lg">
-        Hey {user?.fullName || "--"} -{" "}
-        <span className="text-sm font-normal text-gray-dark">What is happening today?</span>
-      </h2>
-      <section className="flex gap-6">
-        <div className="w-2/3">
-          <div className="grid grid-cols-2 gap-4">
+      <div className="mb-6">
+        <PageHeader title={`Hey ${user?.fullName || "--"}`} subtitle="What is happening today?" />
+      </div>
+      <section className="flex flex-col lg:flex-row gap-6">
+        <div className="w-full lg:w-2/3 min-w-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {Object.keys(STATS).map((key) => (
-              <div key={key} className="border p-5 rounded-lg bg-white space-y-5">
+              <div key={key} className="p-5 rounded-xl bg-white shadow-sm space-y-5">
                 {Object.entries(STATS[key]).map(([label, value]) => (
                   <div key={label} className="flex items-center justify-between gap-3">
                     <p className={label === "chaptersAndRegions" ? "font-semibold" : "text-sm"}>
@@ -108,7 +108,7 @@ const OverviewPage = () => {
             ))}
           </div>
 
-          <section className="bg-white shadow rounded-xl pt-6 mt-8">
+          <section className="bg-white rounded-xl shadow-sm pt-6 mt-8">
             <div className="flex items-center justify-between gap-6 px-6 pb-6">
               <h3 className="font-bold text-base">Recent Orders</h3>
               <Link to="/payments/orders" className="font-semibold text-sm text-primary">
@@ -124,8 +124,8 @@ const OverviewPage = () => {
             />
           </section>
         </div>{" "}
-        <div className="w-1/3 space-y-8">
-          <div className="border p-5 rounded-lg bg-white space-y-5">
+        <div className="w-full lg:w-1/3 min-w-0 space-y-8">
+          <div className="p-5 rounded-xl bg-white shadow-sm space-y-5">
             <h4 className="font-semibold text-base">{"Most Recent Devotional"}</h4>
             <p className="text-sm">
               {devotionals && devotionals[0] ? devotionals[0].keyVerseContent : "No devotional content available"}
@@ -139,7 +139,7 @@ const OverviewPage = () => {
             />
           </div>
 
-          <div className="border p-5 rounded-lg bg-white space-y-5">
+          <div className="p-5 rounded-xl bg-white shadow-sm space-y-5">
             <h4 className="font-semibold text-base">{"Today's Events"}</h4>
             {isLoadingEvents ? (
               <div className="flex justify-center px-6 py-14">

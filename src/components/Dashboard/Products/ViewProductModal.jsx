@@ -9,9 +9,9 @@ const ViewProductModal = ({ isOpen, onClose, product }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Product Details" showCloseBtn>
       <div className="space-y-3 max-h-[600px] overflow-y-auto">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {KEYS.map((key) => (
-            <div key={key} className={["description", "name", "slug"].includes(key) ? "col-span-2" : "col-span-1"}>
+            <div key={key} className={["description", "name", "slug"].includes(key) ? "sm:col-span-2" : "col-span-1"}>
               <h4 className="text-xs font-semibold text-gray-600 uppercase mb-1">
                 {key === "stock" ? "Available Quantity" : convertToCapitalizedWords(key)}
               </h4>
@@ -27,7 +27,7 @@ const ViewProductModal = ({ isOpen, onClose, product }) => {
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           <div>
             <h5 className="text-sm font-medium mb-1">Featured Image</h5>
             <img src={product?.featuredImageUrl} alt="" className="h-28 w-full rounded-xl" />

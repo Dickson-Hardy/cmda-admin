@@ -112,8 +112,11 @@ const NotificationPanel = ({ onSuccess }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow p-6">
-      <h3 className="font-bold text-lg mb-4">Send Push Notification</h3>
+    <div className="bg-white rounded-xl shadow-sm p-6">
+      <h3 className="font-bold text-lg">Send Push Notification</h3>
+      <p className="text-sm text-muted mb-4">
+        Compose a push notification and choose who receives it on the mobile app.
+      </p>
       
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Notification Type */}

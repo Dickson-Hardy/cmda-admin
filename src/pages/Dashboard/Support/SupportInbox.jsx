@@ -6,10 +6,19 @@ import {
   useReplySupportTicketMutation,
   useGetSupportAttachmentMutation,
 } from "~/redux/api/supportApi";
+import Button from "~/components/Global/Button/Button";
+import PageHeader from "~/components/Global/PageHeader/PageHeader";
 import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const statuses = { open: "Open", in_progress: "In progress", awaiting_member: "Awaiting member", resolved: "Resolved" };
-const input = "border border-gray-300 rounded-lg px-3 py-2 min-w-0 bg-white w-full";
+const statusBadge = {
+  open: "bg-onPrimaryContainer text-primary",
+  in_progress: "bg-primaryTint2 text-dark",
+  awaiting_member: "bg-yellow-600/20 text-yellow-600",
+  resolved: "bg-success/20 text-success",
+};
+const input =
+  "border border-gray-300 rounded-lg px-3 py-2 min-w-0 bg-white w-full focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/50";
 const button = "rounded-lg border px-4 py-2 text-sm font-semibold disabled:opacity-50 disabled:cursor-wait";
 
 function Conversation({ id, onClose }) {
@@ -125,8 +134,7 @@ function Conversation({ id, onClose }) {
             </div>
             <button className={`${button} bg-primary text-white`} disabled={busy || isFetching}>
               {updating ? "Saving…" : "Save changes"}
-            </button>
-          </form>
+            </button>          </form>
           {ticket.hasAttachment ? (
             <div>
               <button
@@ -167,7 +175,7 @@ function Conversation({ id, onClose }) {
             {ticket.messages.map((message) => (
               <article
                 key={message.messageId}
-                className={`p-4 rounded-xl ${message.author === "team" ? "bg-purple-50" : "bg-gray-50"}`}
+                className={`p-4 rounded-xl ${message.author === "team" ? "bg-primaryTint" : "bg-gray-50"}`}
               >
                 <div className="flex flex-wrap gap-2 justify-between text-xs text-gray-600">
                   <strong>{message.author === "team" ? "CMDA team" : ticket.name}</strong>
@@ -246,14 +254,11 @@ export default function SupportInbox() {
   const filter = (e) => setFilters((previous) => ({ ...previous, [e.target.name]: e.target.value, page: 1 }));
   return (
     <div className="space-y-6 max-w-7xl">
-      <header>
-        <p className="text-sm text-primary font-semibold">Member experience</p>
-        <h1 className="text-2xl font-bold mt-1">Complaints & feedback</h1>
-        <p className="text-gray-600 mt-2">
-          One inbox for cmdanigeria.net and cmdanigeria.org. Review, assign and respond to submissions.
-        </p>
-      </header>
-      <div className="bg-white border rounded-xl p-4 space-y-4">
+      <PageHeader
+        title="Complaints & feedback"
+        subtitle="One inbox for cmdanigeria.net and cmdanigeria.org. Review, assign and respond to submissions."
+      />
+      <div className="bg-white rounded-xl shadow-sm p-4 space-y-4">
         <div className="grid sm:grid-cols-3 gap-3">
           <label className="text-sm">
             Status

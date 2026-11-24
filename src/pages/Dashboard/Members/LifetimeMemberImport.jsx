@@ -114,7 +114,7 @@ const LifetimeMemberImport = () => {
 
         {preview ? (
           <div className="mt-8">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-5">
               {[
                 ["Rows", preview.total ?? 0],
                 ["Matched", preview.counts?.matched ?? 0],

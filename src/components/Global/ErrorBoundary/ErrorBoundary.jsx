@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "../Button/Button";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -53,12 +54,9 @@ class ErrorBoundary extends React.Component {
               We apologize for the inconvenience. The application encountered an unexpected error.
             </p>
             <div className="space-y-3">
-              <button
-                onClick={this.handleReset}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-              >
+              <Button onClick={this.handleReset} className="w-full">
                 Try Again
-              </button>
+              </Button>
 
               <button
                 onClick={this.handleClearAndReload}

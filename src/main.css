@@ -23,7 +23,13 @@
 
 :root {
   --toastify-color-success: #117e45;
-  --toastify-color-error: #ff4834;
+  --toastify-color-error: #ff4040;
+}
+
+/* Consistent brand focus ring for keyboard navigation */
+:focus-visible {
+  outline: 2px solid #994279;
+  outline-offset: 2px;
 }
 
 /* For Webkit-based browsers (Chrome, Safari and Opera) */
@@ -38,9 +44,6 @@
 }
 
 /* country with flags custom styling */
-.ReactFlagsSelect-module_selectValue__152eS {
-  /* display: none */
-}
 .ReactFlagsSelect-module_selectBtn__19wW7[aria-expanded="true"]:after,
 .ReactFlagsSelect-module_selectBtn__19wW7:after {
   display: none;

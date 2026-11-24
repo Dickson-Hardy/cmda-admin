@@ -213,7 +213,7 @@ const CreateProductPage = () => {
             {product ? (
               <>
                 {product?.additionalImages.length ? (
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {product?.additionalImages?.map((x) => (
                       <div key={x}>
                         <h5 className="text-sm font-medium mb-1">{x.name}</h5>
@@ -229,7 +229,7 @@ const CreateProductPage = () => {
               <>
                 {" "}
                 {colors && (
-                  <div className="grid grid-cols-4 gap-3 mt-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
                     <h5 className="text-gray-600 font-medium uppercase text-xs">Color Name</h5>
                     <h5 className="text-gray-600 font-medium uppercase text-xs">Select Color</h5>
                     <h5 className="text-gray-600 font-medium uppercase text-xs">

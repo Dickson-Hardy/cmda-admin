@@ -19,7 +19,7 @@ const TextArea = ({
   return (
     <div className={divClassName}>
       {showTitleLabel && (
-        <label htmlFor={label} className="block mb-1 text-sm font-semibold text-black">
+        <label htmlFor={label} className="block mb-1 text-sm font-semibold text-ink">
           {title || convertToCapitalizedWords(label)}
           {required ? <span className="text-error">*</span> : null}
         </label>

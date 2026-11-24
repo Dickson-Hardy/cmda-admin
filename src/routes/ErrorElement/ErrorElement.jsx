@@ -7,7 +7,7 @@ export default function ErrorElement() {
   return (
     <section className="h-[60vh] flex flex-col justify-center">
       <div className="max-w-screen-md mx-auto p-8">
-        <h2 className="text-2xl md:text-4xl font-black text-black mt-4">
+        <h2 className="text-2xl md:text-4xl font-black text-ink mt-4">
           Oops! <span>💔</span> <br /> {_404 ? "This page does not exist" : "Something went wrong"}.
         </h2>
         <div className="text-primary font-mono inline-block w-auto font-semibold font-italic bg-primary/20 rounded-lg py-4 px-6 text-sm my-4">

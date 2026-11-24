@@ -40,7 +40,7 @@ const SearchBar = ({
           id="search-input"
           value={inputValue}
           className={classNames(
-            "h-12 border border-gray-300 text-black placeholder:text-gray-400",
+            "h-12 border border-gray-300 text-ink placeholder:text-gray-400",
             "text-sm rounded-lg block w-full ps-8 pe-8 py-3 px-4",
             "focus:ring focus:ring-primary/20 focus:outline-none focus:border-primary transition-all"
           )}

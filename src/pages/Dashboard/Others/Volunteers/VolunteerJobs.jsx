@@ -72,7 +72,7 @@ const VolunteerJobs = () => {
                   <h3 className="font-semibold text-sm truncate mt-2 mb-0.5">{job.title}</h3>
                   <p className="line-clamp-2 text-sm text-gray-600 mb-2">{job.description}</p>
                   <p className="text-xs text-gray-600 font-medium">
-                    Created: <span className="text-black">{formatDate(job.createdAt).date}</span>
+                    Created: <span className="text-ink">{formatDate(job.createdAt).date}</span>
                   </p>
                 </div>
               </div>

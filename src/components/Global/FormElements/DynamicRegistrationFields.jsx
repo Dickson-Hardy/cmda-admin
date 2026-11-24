@@ -38,7 +38,7 @@ const DynamicRegistrationFields = () => {
   const values = useWatch({ control, name: "registrationFields" }) || [];
 
   return (
-    <section className="col-span-2 rounded-xl border border-purple-200 bg-purple-50 p-4">
+    <section className="col-span-2 rounded-xl border border-onPrimaryContainer bg-primaryTint p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h4 className="font-semibold text-base text-gray-800">Custom Registration Form</h4>
@@ -59,7 +59,7 @@ const DynamicRegistrationFields = () => {
           const type = values[index]?.type || "shortText";
           const needsOptions = type === "select" || type === "radio";
           return (
-            <article key={field.fieldKey} className="rounded-xl border border-purple-200 bg-white p-4 shadow-sm">
+            <article key={field.fieldKey} className="rounded-xl border border-onPrimaryContainer bg-white p-4 shadow-sm">
               <input type="hidden" {...register(`registrationFields.${index}.id`)} />
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h5 className="font-semibold text-sm text-gray-700">Field {index + 1}</h5>
@@ -77,7 +77,7 @@ const DynamicRegistrationFields = () => {
               </div>
 
               <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2">
-                <label className="block text-sm font-semibold text-black">
+                <label className="block text-sm font-semibold text-ink">
                   Question / label <span className="text-error">*</span>
                   <input
                     {...register(`registrationFields.${index}.label`, { required: "Field label is required" })}
@@ -86,7 +86,7 @@ const DynamicRegistrationFields = () => {
                   />
                 </label>
 
-                <label className="block text-sm font-semibold text-black">
+                <label className="block text-sm font-semibold text-ink">
                   Field type
                   <select
                     {...register(`registrationFields.${index}.type`)}
@@ -97,7 +97,7 @@ const DynamicRegistrationFields = () => {
                 </label>
 
                 {type !== "checkbox" ? (
-                  <label className="block text-sm font-semibold text-black">
+                  <label className="block text-sm font-semibold text-ink">
                     Placeholder
                     <input
                       {...register(`registrationFields.${index}.placeholder`)}
@@ -112,7 +112,7 @@ const DynamicRegistrationFields = () => {
                   Required field
                 </label>
 
-                <label className="block text-sm font-semibold text-black md:col-span-2">
+                <label className="block text-sm font-semibold text-ink md:col-span-2">
                   Help text
                   <input
                     {...register(`registrationFields.${index}.helpText`)}
@@ -122,7 +122,7 @@ const DynamicRegistrationFields = () => {
                 </label>
 
                 {needsOptions ? (
-                  <label className="block text-sm font-semibold text-black md:col-span-2">
+                  <label className="block text-sm font-semibold text-ink md:col-span-2">
                     Choices <span className="text-error">*</span>
                     <textarea
                       {...register(`registrationFields.${index}.optionsText`, { required: "Add at least two choices" })}
@@ -140,7 +140,7 @@ const DynamicRegistrationFields = () => {
       </div>
 
       {fields.length === 0 ? (
-        <p className="mt-4 rounded-lg border border-dashed border-purple-300 bg-white p-4 text-center text-sm text-gray-500">
+        <p className="mt-4 rounded-lg border border-dashed border-onPrimaryContainer bg-white p-4 text-center text-sm text-gray-500">
           No extra questions configured. Registration will use the standard conference fields.
         </p>
       ) : null}

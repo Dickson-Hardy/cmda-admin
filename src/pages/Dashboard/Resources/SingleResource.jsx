@@ -41,7 +41,7 @@ const SingleResource = () => {
     <div>
       <BackButton label="Back to Resources" to="/resources" />
 
-      <section className="bg-white rounded-2xl p-6 shadow mt-8">
+      <section className="bg-white rounded-xl shadow-sm p-6 mt-8">
         <span className="capitalize bg-onTertiary text-tertiary px-4 py-2 rounded-lg text-xs font-semibold mb-4 inline-block">
           {singleRes?.category}
         </span>
@@ -79,7 +79,7 @@ const SingleResource = () => {
         </div>
 
         <p className="text-gray text-sm mb-4">
-          Posted: <span className="text-black font-medium">{formatDate(singleRes?.createdAt).dateTime}</span>{" "}
+          Posted: <span className="text-ink font-medium">{formatDate(singleRes?.createdAt).dateTime}</span>{" "}
         </p>
         <div className="inline-flex items-center gap-4">
           <img src={singleRes?.author?.avatarUrl} className="size-10 rounded-full bg-onPrimary" />

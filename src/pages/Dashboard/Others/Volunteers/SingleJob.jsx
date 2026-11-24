@@ -78,7 +78,7 @@ const SingleVolunteerJob = () => {
         </div>
 
         <p className="text-gray text-sm mb-4">
-          Posted: <span className="text-black font-medium">{formatDate(job?.createdAt).dateTime}</span>{" "}
+          Posted: <span className="text-ink font-medium">{formatDate(job?.createdAt).dateTime}</span>{" "}
         </p>
 
         <div className="flex justify-end gap-6">

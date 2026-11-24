@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import PageHeader from "~/components/Global/PageHeader/PageHeader";
 import {
   useGetDeliverablesQuery,
@@ -16,17 +17,17 @@ import formatDate from "~/utilities/fomartDate";
 
 const STATUS_COLORS = {
   completed: "bg-green-100 text-green-800",
-  in_progress: "bg-blue-100 text-blue-800",
+  in_progress: "bg-onPrimaryContainer text-ink",
   pending: "bg-yellow-100 text-yellow-800",
   cancelled: "bg-gray-100 text-gray-800",
 };
 
 const CATEGORY_COLORS = {
-  feature: "bg-purple-100 text-purple-800",
+  feature: "bg-onPrimaryContainer text-primary",
   bug_fix: "bg-red-100 text-red-800",
-  enhancement: "bg-indigo-100 text-indigo-800",
-  security: "bg-orange-100 text-orange-800",
-  infrastructure: "bg-cyan-100 text-cyan-800",
+  enhancement: "bg-primaryTint2 text-dark",
+  security: "bg-yellow-100 text-yellow-800",
+  infrastructure: "bg-surface text-dark",
   documentation: "bg-gray-100 text-gray-800",
 };
 
@@ -38,6 +39,7 @@ const ProjectDeliverables = () => {
   });
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const { data: deliverables = [], isLoading } = useGetDeliverablesQuery(filters);
   const { data: stats = {} } = useGetDeliverableStatsQuery();
@@ -50,8 +52,10 @@ const ProjectDeliverables = () => {
     setShowModal(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this item?")) return;
+  const handleDelete = async () => {
+    const id = deleteTarget;
+    if (!id) return;
+    setDeleteTarget(null);
     try {
       await deleteDeliverable(id).unwrap();
       toast.success("Deliverable deleted successfully");
@@ -113,7 +117,7 @@ const ProjectDeliverables = () => {
               <p className="text-sm text-gray-600">Total Items</p>
               <p className="text-2xl font-bold text-gray-900">{stats.total || 0}</p>
             </div>
-            <div className="text-3xl text-blue-600">{icons.list}</div>
+            <div className="text-3xl text-primary">{icons.list}</div>
           </div>
         </div>
 
@@ -131,9 +135,9 @@ const ProjectDeliverables = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">In Progress</p>
-              <p className="text-2xl font-bold text-blue-600">{stats.inProgress || 0}</p>
+              <p className="text-2xl font-bold text-primary">{stats.inProgress || 0}</p>
             </div>
-            <div className="text-3xl text-blue-600">{icons.refresh}</div>
+            <div className="text-3xl text-primary">{icons.refresh}</div>
           </div>
         </div>
 
@@ -141,9 +145,9 @@ const ProjectDeliverables = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Hours</p>
-              <p className="text-2xl font-bold text-purple-600">{stats.totalHoursActual?.toLocaleString() || 0}</p>
+              <p className="text-2xl font-bold text-primary">{stats.totalHoursActual?.toLocaleString() || 0}</p>
             </div>
-            <div className="text-3xl text-purple-600">{icons.time}</div>
+            <div className="text-3xl text-primary">{icons.time}</div>
           </div>
         </div>
       </div>
@@ -286,7 +290,7 @@ const ProjectDeliverables = () => {
                       <button onClick={() => handleEdit(item)} className="text-primary hover:text-primary-dark mr-3">
                         Edit
                       </button>
-                      <button onClick={() => handleDelete(item._id)} className="text-red-600 hover:text-red-900">
+                      <button onClick={() => setDeleteTarget(item._id)} className="text-red-600 hover:text-red-900">
                         Delete
                       </button>
                     </td>
@@ -308,6 +312,17 @@ const ProjectDeliverables = () => {
           }}
         />
       )}
+
+      <ConfirmationModal
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        icon={icons.delete}
+        title="Delete deliverable"
+        subtitle="Are you sure you want to delete this item?"
+        mainAction={handleDelete}
+        mainActionText="Delete"
+        subAction={true}
+      />
     </div>
   );
 };

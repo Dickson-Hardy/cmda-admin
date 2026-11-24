@@ -102,7 +102,7 @@ const Members = () => {
         ))}
       </div>
 
-      <section className="bg-white shadow rounded-xl pt-6 mt-8">
+      <section className="bg-white rounded-xl shadow-sm pt-6 mt-8">
         <div className="flex flex-col gap-3 px-4 sm:px-6 mb-3">
           <h3 className="font-bold text-base">All Members</h3>
           <div className="flex flex-wrap items-center gap-3">

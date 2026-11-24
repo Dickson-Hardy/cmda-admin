@@ -32,19 +32,19 @@ const ViewOrderModal = ({ isOpen, onClose, orderId, onUpdate }) => {
           <Loading height={64} width={64} />
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3 gap-y-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 gap-y-3.5">
           {Object.entries(DETAILS).map(([key, value]) => (
             <div
               key={key}
-              className={["shippingAddress", "shippingContactEmail"].includes(key) ? "col-span-2" : "col-span-1"}
+              className={["shippingAddress", "shippingContactEmail"].includes(key) ? "sm:col-span-2" : "col-span-1"}
             >
               <h4 className="text-xs font-semibold text-gray-600 uppercase mb-1">{convertToCapitalizedWords(key)}</h4>
               <p className={`text-sm font-medium`}>{value || "-"}</p>
             </div>
           ))}
-          <div className={"col-span-2"}>
+          <div className={"sm:col-span-2"}>
             <h4 className="text-xs font-semibold text-gray-600 uppercase mb-1">Products</h4>
-            <div className="max-h-32 overflow-y-scroll bg-gray-50 py-2 px-1">
+            <div className="max-h-32 overflow-auto bg-gray-50 py-2 px-1">
               <table className="table-auto text-xs w-full font-medium">
                 <tbody>
                   {order.products?.map((item, v) => (
@@ -66,9 +66,9 @@ const ViewOrderModal = ({ isOpen, onClose, orderId, onUpdate }) => {
               </table>
             </div>
           </div>
-          <div className={"col-span-2"}>
+          <div className={"sm:col-span-2"}>
             <h4 className="text-xs font-semibold text-gray-600 uppercase mb-1">Order Timeline</h4>
-            <div className="max-h-28 overflow-y-scroll bg-onPrimary py-2 px-1">
+            <div className="max-h-28 overflow-auto bg-onPrimary py-2 px-1">
               <table className="table-auto text-xs w-full">
                 <tbody>
                   <tr>
@@ -87,7 +87,7 @@ const ViewOrderModal = ({ isOpen, onClose, orderId, onUpdate }) => {
               </table>
             </div>
           </div>
-          <div className={"col-span-2 flex justify-end"}>
+          <div className={"sm:col-span-2 flex justify-end"}>
             <Button label="Update Status" onClick={onUpdate} />
           </div>
         </div>

@@ -127,7 +127,7 @@ const ChatBox = ({ userId, recipientId }) => {
       {/* back button mobile screen */}
       <div className="lg:hidden">
         <div
-          className="flex items-center text-black gap-x-2 mt-1 mb-4 cursor-pointer"
+          className="flex items-center text-ink gap-x-2 mt-1 mb-4 cursor-pointer"
           onClick={() => navigate("/messaging")}
         >
           <span className="text-lg">{icons.arrowLeft}</span> <span>Back</span>
@@ -148,7 +148,7 @@ const ChatBox = ({ userId, recipientId }) => {
           />
         )}
       </div>
-      <div className="w-full bg-onPrimary h-[calc(100vh-400px)] md:h-[calc(100vh-320px)]">
+      <div className="w-full bg-onPrimary h-[calc(100vh-400px)] md:h-[calc(100vh-320px)] min-h-[280px]">
         {isLoading ? (
           <div className="w-full h-full flex items-center justify-center">
             <Loading className="text-primary h-16 w-16" />

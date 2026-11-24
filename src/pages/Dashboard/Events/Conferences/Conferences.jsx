@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "~/components/Global/Button/Button";
 import { Pagination } from "~/components/Global/Pagination/Pagination";
+import PageHeader from "~/components/Global/PageHeader/PageHeader";
 import { useGetAllConferencesQuery } from "~/redux/api/eventsApi";
 import { formatEventAudience } from "~/utilities/formatEventAudience";
 import { formatCurrency } from "~/utilities/formatCurrency";
@@ -63,13 +63,17 @@ const Conferences = () => {
 
   return (
     <div>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
-        <h2 className="text-xl font-bold">Conferences Management</h2>
-        <Button label="Create Conference" onClick={() => navigate("/events/create?type=conference")} />
+      <div className="mb-6">
+        <PageHeader
+          title="Conferences Management"
+          subtitle="Manage all conferences"
+          action={() => navigate("/events/create?type=conference")}
+          actionLabel="Create Conference"
+        />
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl p-6 shadow mb-6">
+      <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
         <h3 className="font-semibold text-lg mb-4">Filters</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <TextInput label="searchBy" title="Search" register={register} placeholder="Search conferences..." />
@@ -100,7 +104,7 @@ const Conferences = () => {
       </div>
 
       {/* Conference List */}
-      <div className="bg-white rounded-2xl shadow overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
@@ -180,20 +184,20 @@ const Conferences = () => {
                             ))}
                           </div>
                         ) : (
-                          <span className="text-blue-600 font-medium">Free</span>
+                          <span className="text-primary font-medium">Free</span>
                         )}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-900">{conference.registeredUsers?.length || 0}</td>
                       <td className="px-6 py-4 text-sm font-medium space-x-2">
                         <button
                           onClick={() => navigate(`/events/${conference.slug}`)}
-                          className="text-primary hover:text-primary-dark"
+                          className="text-primary hover:text-dark"
                         >
                           View
                         </button>
                         <button
                           onClick={() => navigate(`/events/create?slug=${conference.slug}`)}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="text-primary hover:text-dark"
                         >
                           Edit
                         </button>

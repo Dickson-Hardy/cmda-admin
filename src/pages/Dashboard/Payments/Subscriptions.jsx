@@ -134,14 +134,14 @@ const Subscriptions = () => {
           <button
             onClick={() => handleDownloadReceipt(value)}
             disabled={loadingReceipt === value}
-            className="text-primary hover:text-primary-dark underline text-sm font-medium disabled:opacity-50"
+            className="text-primary hover:text-dark underline text-sm font-medium disabled:opacity-50"
           >
             {loadingReceipt === value ? "Loading..." : "View Receipt"}
           </button>
           <button
             onClick={() => handleDownloadReceipt(value, true)}
             disabled={loadingReceipt === value}
-            className="text-secondary hover:text-secondary-dark underline text-sm font-medium disabled:opacity-50"
+            className="text-dark hover:text-primary underline text-sm font-medium disabled:opacity-50"
           >
             Download
           </button>
@@ -214,14 +214,14 @@ const Subscriptions = () => {
 
       <div className="grid sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
         {Object.entries(subscriptionStats).map(([key, value]) => (
-          <div key={key} className="p-4 bg-white border rounded-xl">
+          <div key={key} className="p-4 bg-white rounded-xl shadow-sm">
             <h4 className="uppercase text-xs font-medium text-gray mb-3">{convertToCapitalizedWords(key)}</h4>
             <p className="font-bold text-lg">{(key.includes("Amount") ? formatCurrency(value) : value) || 0}</p>
           </div>
         ))}
       </div>
 
-      <section className="bg-white shadow rounded-xl pt-6 mt-8">
+      <section className="bg-white rounded-xl shadow-sm pt-6 mt-8">
         <div className="flex flex-col gap-3 px-4 pb-6 sm:px-6 xl:flex-row xl:items-center xl:justify-between">
           <h3 className="font-bold text-base">All Subscriptions</h3>
           <div className="flex flex-wrap items-end gap-3">

@@ -115,14 +115,14 @@ const Products = () => {
 
       <div className="grid  sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
         {Object.entries(productStats).map(([key, value]) => (
-          <div key={key} className="p-4 bg-white border rounded-xl">
+          <div key={key} className="p-4 bg-white rounded-xl shadow-sm">
             <h4 className="uppercase text-xs font-medium text-gray mb-3">{convertToCapitalizedWords(key)}</h4>
             <p className="font-bold text-lg">{value || 0}</p>
           </div>
         ))}
       </div>
 
-      <section className="bg-white shadow rounded-xl pt-6 mt-8">
+      <section className="bg-white rounded-xl shadow-sm pt-6 mt-8">
         <div className="flex flex-col gap-3 px-4 pb-6 sm:px-6 xl:flex-row xl:items-center xl:justify-between">
           <h3 className="font-bold text-base">All Products</h3>
           <SearchBar

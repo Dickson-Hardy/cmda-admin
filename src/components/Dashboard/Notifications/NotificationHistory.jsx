@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
+import Loading from "~/components/Global/Loading/Loading";
 import Table from "~/components/Global/Table/Table";
 import Modal from "~/components/Global/Modal/Modal";
 import {
@@ -13,10 +14,10 @@ import formatDate from "~/utilities/fomartDate";
 import convertToCapitalizedWords from "~/utilities/convertToCapitalizedWords";
 
 const NOTIFICATION_TYPE_COLORS = {
-  announcement: "bg-blue-100 text-blue-800",
-  event_reminder: "bg-green-100 text-green-800",
-  payment_reminder: "bg-yellow-100 text-yellow-800",
-  custom: "bg-purple-100 text-purple-800",
+  announcement: "bg-onPrimaryContainer text-primary",
+  event_reminder: "bg-primary text-white",
+  payment_reminder: "bg-surface text-ink",
+  custom: "bg-primaryTint2 text-dark",
 };
 
 const NotificationHistory = () => {
@@ -68,7 +69,7 @@ const NotificationHistory = () => {
           <span
             className={classNames(
               "px-2 py-1 rounded text-xs font-medium capitalize",
-              NOTIFICATION_TYPE_COLORS[value] || "bg-gray-100 text-gray-800"
+              NOTIFICATION_TYPE_COLORS[value] || "bg-gray-100 text-gray-600"
             )}
           >
             {value?.replace("_", " ")}
@@ -90,7 +91,7 @@ const NotificationHistory = () => {
       if (col.accessor === "sent") {
         if (item.scheduledAt && !item.sent) {
           return (
-            <span className="px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
+            <span className="px-2 py-1 rounded text-xs font-medium bg-yellow-600/20 text-yellow-600">
               Scheduled
             </span>
           );
@@ -99,7 +100,7 @@ const NotificationHistory = () => {
           <span
             className={classNames(
               "px-2 py-1 rounded text-xs font-medium",
-              value ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+              value ? "bg-success/20 text-success" : "bg-gray-100 text-gray-600"
             )}
           >
             {value ? "Sent" : "Pending"}
@@ -111,7 +112,7 @@ const NotificationHistory = () => {
         const delivered = item.deliveryStats?.delivered || 0;
         const total = item.deliveryStats?.total || 0;
         return (
-          <span className="text-green-600 font-medium">
+          <span className="text-success font-medium">
             {delivered}/{total}
           </span>
         );
@@ -130,7 +131,7 @@ const NotificationHistory = () => {
         if (!value) {
           if (item.scheduledAt) {
             return (
-              <span className="text-orange-600 text-sm">
+              <span className="text-yellow-600 text-sm">
                 {formatDate(item.scheduledAt).dateTime}
               </span>
             );
@@ -157,7 +158,7 @@ const NotificationHistory = () => {
   }));
 
   return (
-    <div className="bg-white rounded-xl shadow">
+    <div className="bg-white rounded-xl shadow-sm">
       {/* Header with filters */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 border-b">
         <h3 className="font-bold text-lg">Notification History</h3>
@@ -211,7 +212,9 @@ const NotificationHistory = () => {
         maxWidth={500}
       >
         {isLoadingStats ? (
-          <div className="py-8 text-center text-gray">Loading stats...</div>
+          <div className="py-8 flex justify-center text-gray">
+            <Loading height={32} width={32} />
+          </div>
         ) : stats ? (
           <div className="space-y-4">
             <div>
@@ -219,13 +222,13 @@ const NotificationHistory = () => {
               <p className="text-base">{stats.title}</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <h4 className="text-sm font-semibold text-gray mb-1">Type</h4>
                 <span
                   className={classNames(
                     "px-2 py-1 rounded text-xs font-medium capitalize inline-block",
-                    NOTIFICATION_TYPE_COLORS[stats.type] || "bg-gray-100 text-gray-800"
+                    NOTIFICATION_TYPE_COLORS[stats.type] || "bg-gray-100 text-gray-600"
                   )}
                 >
                   {stats.type?.replace("_", " ")}
@@ -240,13 +243,13 @@ const NotificationHistory = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <h4 className="text-sm font-semibold text-gray mb-1">Status</h4>
                 <span
                   className={classNames(
                     "px-2 py-1 rounded text-xs font-medium",
-                    stats.sent ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                    stats.sent ? "bg-success/20 text-success" : "bg-gray-100 text-gray-600"
                   )}
                 >
                   {stats.sent ? "Sent" : "Pending"}
@@ -263,7 +266,7 @@ const NotificationHistory = () => {
             {/* Delivery Stats */}
             <div className="border-t pt-4">
               <h4 className="text-sm font-semibold mb-3">Delivery Statistics</h4>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-gray-50 rounded-lg p-3 text-center">
                   <p className="text-2xl font-bold text-primary">
                     {stats.deliveryStats?.total || 0}
@@ -271,7 +274,7 @@ const NotificationHistory = () => {
                   <p className="text-xs text-gray">Total</p>
                 </div>
                 <div className="bg-green-50 rounded-lg p-3 text-center">
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-2xl font-bold text-success">
                     {stats.deliveryStats?.delivered || 0}
                   </p>
                   <p className="text-xs text-gray">Delivered</p>

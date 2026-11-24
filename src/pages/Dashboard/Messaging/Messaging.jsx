@@ -28,12 +28,12 @@ const DashboardMessagingPage = () => {
 
   return (
     <div>
-      <div className="flex justify-between gap-2 items-center mb-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mb-4">
         <h2 className="text-xl md:text-2xl font-bold text-primary">Messaging</h2>
         <SendNewMessage refetchContacts={refetchContacts} />
       </div>
 
-      <section className="gap-10 h-[calc(100vh-190px)] flex">
+      <section className="gap-6 lg:gap-10 h-[calc(100vh-190px)] min-h-[400px] flex flex-col lg:flex-row">
         <div className={recipientId ? "hidden lg:contents" : "contents"}>
           <ContactList
             allContacts={allContacts}

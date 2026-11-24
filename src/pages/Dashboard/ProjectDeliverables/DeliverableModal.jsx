@@ -150,7 +150,7 @@ const DeliverableModal = ({ item, onClose }) => {
         </div>
 
         {/* Category and Status */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Category <span className="text-red-500">*</span>
@@ -209,7 +209,7 @@ const DeliverableModal = ({ item, onClose }) => {
         </div>
 
         {/* Time and Metrics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Estimated Hours</label>
             <input
@@ -260,7 +260,7 @@ const DeliverableModal = ({ item, onClose }) => {
         </div>
 
         {/* Dates */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
             <input

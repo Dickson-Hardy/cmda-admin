@@ -6,6 +6,7 @@ import UpdateCompletedUsersModal from "~/components/Dashboard/Events/UpdateCompl
 import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
 import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
+import PageHeader from "~/components/Global/PageHeader/PageHeader";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import Table from "~/components/Global/Table/Table";
 import {
@@ -88,8 +89,12 @@ const SingleTraining = () => {
     <div>
       <BackButton label="Back to Traings List" to="/trainings" />
 
+      <div className="mt-6">
+        <PageHeader title="Training Details" subtitle="View & manage completed training members" />
+      </div>
+
       <div className="flex gap-6 mt-6">
-        <section className="bg-white rounded-2xl p-6 shadow w-full">
+        <section className="bg-white rounded-xl shadow-sm p-6 w-full">
           <span
             className={classNames(
               "capitalize px-4 py-2 rounded-lg text-xs font-semibold mb-4 inline-block",
@@ -102,7 +107,7 @@ const SingleTraining = () => {
           <h2 className="font-bold mb-4 capitalize text-lg">{training?.name}</h2>
 
           <section className="mt-8">
-            <div className="flex items-center gap-6 pb-6">
+            <div className="flex flex-wrap items-center gap-6 pb-6">
               <h3 className="font-bold text-base">All Completed Members</h3>
 
               <Button

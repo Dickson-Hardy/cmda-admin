@@ -1,23 +1,37 @@
 import { classNames } from "~/utilities/classNames";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import { useDispatch } from "react-redux";
 import { setUser } from "~/redux/features/auth/authSlice";
 import { clearTokens } from "~/redux/features/auth/tokenSlice";
 import Logo from "~/components/Global/Logo/Logo";
-import { useState } from "react";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
+import { useEffect, useState } from "react";
 
 const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }) => {
   const dispatch = useDispatch();
 
+  const [logoutOpen, setLogoutOpen] = useState(false);
+
   const handleLogout = () => {
-    if (!window.confirm("Log out of your CMDA account?")) return;
     window.location.href = "/login";
     dispatch(clearTokens());
     dispatch(setUser(null));
   };
 
   const [openDropdown, setOpenDropdown] = useState(null);
+  const { pathname } = useLocation();
+
+  // Keep the dropdown in sync with the active route so deep-linked children stay visible
+  const activeParentIndex = navLinks.findIndex((navItem) =>
+    navItem.children?.some(
+      (child) => pathname === child.link || pathname.startsWith(`${child.link}/`)
+    )
+  );
+
+  useEffect(() => {
+    setOpenDropdown(activeParentIndex >= 0 ? activeParentIndex : null);
+  }, [activeParentIndex]);
 
   const toggleDropdown = (index) => {
     setOpenDropdown(openDropdown === index ? null : index);
@@ -26,14 +40,14 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }
   return (
     <>
       {/* Overlay */}
-      {isOpen && <div className="fixed inset-0 bg-black opacity-50 z-[5] lg:hidden" onClick={onToggleSidebar}></div>}
+      {isOpen && <div className="fixed inset-0 bg-black opacity-50 z-30 lg:hidden" onClick={onToggleSidebar}></div>}
 
       {/* Sidebar */}
       <aside
         className={classNames(
           isOpen ? "translate-x-0 animate-slidein" : "-translate-x-full",
           "shadow-md lg:shadow-none p-5 border-r",
-          "transition-all duration-200 fixed inset-y-0 left-0 w-64 bg-white overflow-y-auto ease-in-out transform z-10 lg:z-[1]"
+          "transition-all duration-200 fixed inset-y-0 left-0 w-64 bg-white overflow-y-auto ease-in-out transform z-40"
         )}
       >
         <Logo className="w-auto h-10 sm:h-12 hidden md:block" />
@@ -47,7 +61,10 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }
                   <button
                     className={classNames(
                       "flex w-full items-center gap-4 px-4 py-2.5 cursor-pointer text-sm font-semibold rounded-lg transition-all",
-                      "bg-transparent text-black hover:bg-onPrimary truncate"
+                      "truncate",
+                      activeParentIndex === index
+                        ? "bg-onPrimaryContainer text-primary"
+                        : "bg-transparent text-ink hover:bg-onPrimary"
                     )}
                     onClick={() => toggleDropdown(index)}
                   >
@@ -68,7 +85,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }
                                 "flex items-center gap-2.5 px-4 py-2.5 cursor-pointer text-sm font-medium rounded-lg",
                                 isActive
                                   ? "bg-onPrimaryContainer text-primary"
-                                  : "bg-transparent text-black hover:text-primary"
+                                  : "bg-transparent text-ink hover:text-primary"
                               )
                             }
                           >
@@ -86,7 +103,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }
                     className={({ isActive }) =>
                       classNames(
                         "flex items-center gap-4 px-4 py-2.5 cursor-pointer text-sm font-semibold rounded-lg transition-all",
-                        isActive ? "bg-onPrimaryContainer text-primary" : "bg-transparent text-black hover:bg-onPrimary"
+                        isActive ? "bg-onPrimaryContainer text-primary" : "bg-transparent text-ink hover:bg-onPrimary"
                       )
                     }
                   >
@@ -106,9 +123,9 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }
                 type="button"
                 className={classNames(
                   "flex items-center gap-4 px-4 py-2.5 cursor-pointer text-sm font-semibold rounded-lg",
-                  "bg-transparent text-black hover:bg-onPrimary transition-all"
+                  "bg-transparent text-ink hover:bg-onPrimary transition-all"
                 )}
-                onClick={handleLogout}
+                onClick={() => setLogoutOpen(true)}
               >
                 <span className="text-xl">{icons.logout}</span> Logout
               </button>
@@ -116,6 +133,17 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }
           </ul>
         </nav>
       </aside>
+
+      <ConfirmationModal
+        isOpen={logoutOpen}
+        onClose={() => setLogoutOpen(false)}
+        icon={icons.logout}
+        title="Log out?"
+        subtitle="You will need to sign in again to access the admin dashboard."
+        mainAction={handleLogout}
+        mainActionText="Yes, log out"
+        subActionText="Cancel"
+      />
     </>
   );
 };

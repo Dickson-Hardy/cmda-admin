@@ -58,8 +58,8 @@ const CreateProductModal = ({ isOpen, onClose, product, onSubmit, loading }) => 
       maxWidth={640}
       showCloseBtn
     >
-      <form onSubmit={handleSubmit(preSubmit)} className="grid grid-cols-2 gap-3">
-        <div className="col-span-2">
+      <form onSubmit={handleSubmit(preSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="sm:col-span-2">
           <p className="text-sm font-semibold mb-1">
             Featured Image <span className="text-error">*</span>
           </p>
@@ -76,10 +76,10 @@ const CreateProductModal = ({ isOpen, onClose, product, onSubmit, loading }) => 
             <input type="file" accept="image/*" hidden id="image" name="image" onChange={handlePreview} />
           </div>
         </div>
-        <div className="col-span-2">
+        <div className="sm:col-span-2">
           <TextInput label="name" register={register} required errors={errors} />
         </div>
-        <div className="col-span-2">
+        <div className="sm:col-span-2">
           <TextArea label="description" register={register} required errors={errors} rows={3} />
         </div>
         <TextInput label="price" type="number" register={register} required errors={errors} />
@@ -99,7 +99,7 @@ const CreateProductModal = ({ isOpen, onClose, product, onSubmit, loading }) => 
           errors={errors}
         />
         <TextInput label="brand" register={register} required errors={errors} />
-        <div />
+        <div className="hidden sm:block" />
         <Button label="Submit" type="submit" loading={loading} className="mt-2" />
       </form>
     </Modal>

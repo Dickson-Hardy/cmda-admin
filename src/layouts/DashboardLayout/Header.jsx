@@ -1,7 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import Dropdown from "~/components/Global/Dropdown/DropDown";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import Logo from "~/components/Global/Logo/Logo";
 import { setUser } from "~/redux/features/auth/authSlice";
 import { clearTokens } from "~/redux/features/auth/tokenSlice";
@@ -12,19 +14,20 @@ const Header = ({ onToggleSidebar, unreadMessagesCount }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
+  const [logoutOpen, setLogoutOpen] = useState(false);
+
   const handleLogout = () => {
-    if (!window.confirm("Log out of your CMDA account?")) return;
     window.location.href = "/login";
     dispatch(clearTokens());
     dispatch(setUser(null));
   };
 
   return (
-    <header className="bg-white fixed top-0 inset-x-0 z-[2] gap-4 border-b">
+    <header className="bg-white fixed top-0 inset-x-0 z-50 gap-4 border-b">
       <nav className="h-20 w-full flex items-center gap-3 px-4 py-3 sm:gap-4 sm:px-6">
         {/* Sidebar Toggle Button */}
         <button
-          className="text-primary text-2xl focus:outline-none hover:bg-onPrimary rounded-md transition-all p-1 lg:hidden"
+          className="text-primary text-2xl hover:bg-onPrimary rounded-md transition-all p-1 focus-visible:ring-2 focus-visible:ring-primary/40"
           onClick={onToggleSidebar}
           aria-label="Toggle navigation"
         >
@@ -37,7 +40,7 @@ const Header = ({ onToggleSidebar, unreadMessagesCount }) => {
         {/* Message Icon */}
         <button
           type="button"
-          className="relative inline-flex items-center p-1.5 text-xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus:outline-none"
+          className="relative inline-flex items-center p-1.5 text-xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus-visible:ring-2 focus-visible:ring-primary/40"
           onClick={() => navigate("/messaging")}
         >
           {icons.message}
@@ -68,7 +71,7 @@ const Header = ({ onToggleSidebar, unreadMessagesCount }) => {
                 className={({ isActive }) =>
                   classNames(
                     "flex items-center gap-3 px-5 py-2 cursor-pointer border-t  font-medium transition-all",
-                    isActive ? "bg-onPrimary text-primary" : "bg-transparent text-black hover:bg-onPrimary"
+                    isActive ? "bg-onPrimary text-primary" : "bg-transparent text-ink hover:bg-onPrimary"
                   )
                 }
               >
@@ -78,8 +81,8 @@ const Header = ({ onToggleSidebar, unreadMessagesCount }) => {
             <li>
               <button
                 type="button"
-                className="flex gap-3 items-center text-black cursor-pointer border-t px-5 py-2 hover:bg-onPrimary transition-all"
-                onClick={handleLogout}
+                className="flex gap-3 items-center text-ink cursor-pointer border-t px-5 py-2 hover:bg-onPrimary transition-all"
+                onClick={() => setLogoutOpen(true)}
               >
                 <span className="text-lg">{icons.logout}</span> Logout
               </button>
@@ -87,6 +90,17 @@ const Header = ({ onToggleSidebar, unreadMessagesCount }) => {
           </ul>
         </Dropdown>
       </nav>
+
+      <ConfirmationModal
+        isOpen={logoutOpen}
+        onClose={() => setLogoutOpen(false)}
+        icon={icons.logout}
+        title="Log out?"
+        subtitle="You will need to sign in again to access the admin dashboard."
+        mainAction={handleLogout}
+        mainActionText="Yes, log out"
+        subActionText="Cancel"
+      />
     </header>
   );
 };

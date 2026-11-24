@@ -51,9 +51,9 @@ const ActivateLifetimeModal = ({ isOpen, onClose, onSubmit, loading, member }) =
           />
         )}
 
-        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h4 className="font-semibold text-sm text-blue-900 mb-2">Benefits Include:</h4>
-          <ul className="text-sm text-blue-800 space-y-1">
+        <div className="p-4 bg-primaryTint border border-onPrimaryContainer rounded-lg">
+          <h4 className="font-semibold text-sm text-dark mb-2">Benefits Include:</h4>
+          <ul className="text-sm text-dark space-y-1">
             <li>✓ Full access to all CMDA resources</li>
             <li>✓ Free event registrations</li>
             <li>✓ Priority support</li>

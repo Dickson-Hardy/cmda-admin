@@ -26,35 +26,35 @@ const Button = ({
         return {
           filled: "bg-primary text-white hover:bg-primaryContainer",
           outlined: "bg-transparent text-primary border-[1.5px] border-primary hover:bg-onPrimary",
-          text: "bg-tranparent text-primary hover:bg-onPrimary",
+          text: "bg-transparent text-primary hover:bg-onPrimary",
         };
       case "tertiary":
         // Define styles for tertiary color
         return {
           filled: "bg-tertiary text-white hover:bg-tertiaryContainer",
           outlined: "bg-transparent text-tertiary border-[1.5px] border-tertiary hover:bg-onTertiary",
-          text: "bg-tranparent text-tertiary hover:bg-onTertiary",
+          text: "bg-transparent text-tertiary hover:bg-onTertiary",
         };
       case "secondary":
         // Define styles for secondary color
         return {
           filled: "bg-secondary text-white hover:bg-secondaryContainer",
           outlined: "bg-transparent text-secondary border-[1.5px] border-secondary hover:bg-onSecondary",
-          text: "bg-tranparent text-secondary hover:bg-onSecondary",
+          text: "bg-transparent text-secondary hover:bg-onSecondary",
         };
       case "error":
         // Define styles for error color
         return {
           filled: "bg-error text-white hover:bg-error",
           outlined: "bg-transparent text-error border-[1.5px] border-error hover:bg-error/20",
-          text: "bg-tranparent text-error hover:bg-error/20",
+          text: "bg-transparent text-error hover:bg-error/20",
         };
       default:
         // Default to black color styles if an invalid color is provided
         return {
           filled: "bg-black text-white hover:bg-black",
-          outlined: "bg-transparent text-black border-[1.5px] border-black hover:bg-black/10",
-          text: "bg-tranparent text-black hover:bg-black/10",
+          outlined: "bg-transparent text-ink border-[1.5px] border-black hover:bg-black/10",
+          text: "bg-transparent text-ink hover:bg-black/10",
         };
     }
   };

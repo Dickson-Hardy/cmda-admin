@@ -74,10 +74,10 @@ const PendingRegistrations = () => {
             className={classNames(
               "capitalize px-3 py-1 rounded-full text-xs font-medium",
               item.type === "event"
-                ? "bg-blue-100 text-blue-800"
+                ? "bg-onPrimaryContainer text-ink"
                 : item.type === "subscription"
                   ? "bg-green-100 text-green-800"
-                  : "bg-purple-100 text-purple-800"
+                  : "bg-onPrimaryContainer text-primary"
             )}
           >
             {item.type}
@@ -268,8 +268,8 @@ const PendingRegistrations = () => {
         className="max-w-md"
       >
         <div className="p-6">
-          <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-blue-100 rounded-full">
-            <span className="text-2xl text-blue-600">{icons.refresh}</span>
+          <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-onPrimaryContainer rounded-full">
+            <span className="text-2xl text-primary">{icons.refresh}</span>
           </div>
 
           <h3 className="text-lg font-semibold text-center mb-2">Refresh Payment Status</h3>

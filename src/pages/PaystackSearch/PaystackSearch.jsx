@@ -1,6 +1,9 @@
 import { Fragment, useState } from "react";
 import { useLazySearchPaystackTransactionsQuery } from "~/redux/api/emailsApi";
 import { toast } from "react-toastify";
+import Button from "~/components/Global/Button/Button";
+import PageHeader from "~/components/Global/PageHeader/PageHeader";
+import StatusChip from "~/components/Global/StatusChip/StatusChip";
 
 const INTERNAL_DESCRIPTIONS = ["DONATION", "SUBSCRIPTION", "EVENT", "ORDER"];
 
@@ -50,19 +53,6 @@ const formatDate = (dateString) =>
       })
     : "—";
 
-const getStatusColor = (status) => {
-  switch (status) {
-    case "success":
-      return "bg-green-100 text-green-800";
-    case "failed":
-      return "bg-red-100 text-red-800";
-    case "abandoned":
-      return "bg-yellow-100 text-yellow-800";
-    default:
-      return "bg-gray-100 text-gray-800";
-  }
-};
-
 const PaystackSearch = () => {
   const [email, setEmail] = useState("");
   const [expanded, setExpanded] = useState({});
@@ -88,118 +78,126 @@ const PaystackSearch = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow">
-      <h2 className="text-xl font-semibold mb-4">Search Paystack Transactions</h2>
+    <div className="p-6 flex flex-col gap-6">
+      <PageHeader
+        title="Search Paystack Transactions"
+        subtitle="Look up Paystack transactions by customer email"
+      />
 
-      <form onSubmit={handleSearch} className="flex gap-2 mb-6">
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter customer email"
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-        <button
-          type="submit"
-          disabled={isLoading || isFetching}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-        >
-          {isLoading || isFetching ? "Searching..." : "Search"}
-        </button>
-      </form>
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <form onSubmit={handleSearch} className="flex flex-wrap gap-2 mb-6">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter customer email"
+            className="flex-1 min-w-0 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
+          />
+          <Button
+            type="submit"
+            label="Search"
+            loading={isLoading || isFetching}
+            disabled={isLoading || isFetching}
+          />
+        </form>
 
-      {data?.status && Array.isArray(data?.data) && (
-        <>
-          <p className="text-sm text-gray-600 mb-3">
-            Found {data.data.length} transaction(s)
-          </p>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reference</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Channel</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member / Intent</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {data.data.map((transaction) => {
-                  const source = getSource(transaction);
-                  const isOpen = Boolean(expanded[transaction.id]);
-                  return (
-                    <Fragment key={transaction.id || transaction.reference}>
-                      <tr className="hover:bg-gray-50">
-                        <td className="px-4 py-4 text-sm text-gray-900 whitespace-nowrap">{transaction.reference}</td>
-                        <td className="px-4 py-4 text-sm text-gray-900 whitespace-nowrap">
-                          {formatCurrency(transaction.amount)}
-                        </td>
-                        <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(transaction.status)}`}>
-                            {transaction.status}
-                          </span>
-                        </td>
-                        <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {formatDate(transaction.created_at)}
-                        </td>
-                        <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {transaction.channel || "—"}
-                        </td>
-                        <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {getCustomerEmail(transaction)}
-                        </td>
-                        <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              source.isInternal
-                                ? "bg-purple-100 text-purple-800"
-                                : "bg-gray-100 text-gray-700"
-                            }`}
-                          >
-                            {source.label}
-                          </span>
-                        </td>
-                        <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {getIdentity(transaction)}
-                        </td>
-                        <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          <button
-                            type="button"
-                            onClick={() => toggleExpanded(transaction.id)}
-                            className="text-blue-600 hover:underline"
-                          >
-                            {isOpen ? "Hide" : "Metadata"}
-                          </button>
-                        </td>
+        {data?.status && Array.isArray(data?.data) && (
+          <>
+            {data.data.length > 0 ? (
+              <>
+                <p className="text-sm text-gray-600 mb-3">
+                  Found {data.data.length} transaction(s)
+                </p>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reference</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Channel</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member / Intent</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
                       </tr>
-                      {isOpen && (
-                        <tr>
-                          <td colSpan="9" className="px-4 py-4 bg-gray-50">
-                            <pre className="text-xs text-gray-700 whitespace-pre-wrap break-all">
-                              {JSON.stringify(getMetadata(transaction), null, 2)}
-                            </pre>
-                          </td>
-                        </tr>
-                      )}
-                    </Fragment>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </>
-      )}
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {data.data.map((transaction) => {
+                        const source = getSource(transaction);
+                        const isOpen = Boolean(expanded[transaction.id]);
+                        return (
+                          <Fragment key={transaction.id || transaction.reference}>
+                            <tr className="hover:bg-gray-50">
+                              <td className="px-4 py-4 text-sm text-gray-900 whitespace-nowrap">{transaction.reference}</td>
+                              <td className="px-4 py-4 text-sm text-gray-900 whitespace-nowrap">
+                                {formatCurrency(transaction.amount)}
+                              </td>
+                              <td className="px-4 py-4 text-sm whitespace-nowrap">
+                                <StatusChip status={transaction.status} />
+                              </td>
+                              <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                {formatDate(transaction.created_at)}
+                              </td>
+                              <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                {transaction.channel || "—"}
+                              </td>
+                              <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                {getCustomerEmail(transaction)}
+                              </td>
+                              <td className="px-4 py-4 text-sm whitespace-nowrap">
+                                <span
+                                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                    source.isInternal
+                                      ? "bg-onPrimaryContainer text-primary"
+                                      : "bg-gray-100 text-gray-700"
+                                  }`}
+                                >
+                                  {source.label}
+                                </span>
+                              </td>
+                              <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                {getIdentity(transaction)}
+                              </td>
+                              <td className="px-4 py-4 text-sm whitespace-nowrap">
+                                <button
+                                  type="button"
+                                  onClick={() => toggleExpanded(transaction.id)}
+                                  className="text-primary hover:underline"
+                                >
+                                  {isOpen ? "Hide" : "Metadata"}
+                                </button>
+                              </td>
+                            </tr>
+                            {isOpen && (
+                              <tr>
+                                <td colSpan="9" className="px-4 py-4 bg-gray-50">
+                                  <pre className="text-xs text-gray-700 whitespace-pre-wrap break-all">
+                                    {JSON.stringify(getMetadata(transaction), null, 2)}
+                                  </pre>
+                                </td>
+                              </tr>
+                            )}
+                          </Fragment>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            ) : (
+              <p className="text-center py-10 text-gray-500">No transactions found</p>
+            )}
+          </>
+        )}
 
-      {data && !data.status && (
-        <div className="text-center py-8 text-gray-500">
-          No transactions found or an error occurred
-        </div>
-      )}
+        {data && !data.status && (
+          <div className="text-center py-10 text-gray-500">
+            No transactions found or an error occurred
+          </div>
+        )}
+      </div>
     </div>
   );
 };

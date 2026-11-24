@@ -223,7 +223,7 @@ const Table = ({
             </select>
           </label>
           {/* pagination buttons */}
-          <div className="ml-auto md:ml-0 flex items-center gap-1 text-black">
+          <div className="ml-auto md:ml-0 flex items-center gap-1 text-ink">
             <Button
               icon={icons.chevronLeft}
               onClick={() => table.previousPage()}

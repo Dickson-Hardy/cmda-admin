@@ -14,6 +14,7 @@ import {
   FiFileText,
   FiSend,
   FiImage,
+  FiTrash2,
 } from "react-icons/fi";
 import {
   useGetServiceSubscriptionsQuery,
@@ -27,6 +28,10 @@ import {
   useSendExpiringInvoiceMutation,
 } from "../../../api/serviceSubscriptionsApi";
 import ServiceSubscriptionModal from "./ServiceSubscriptionModal";
+import PageHeader from "../../../components/Global/PageHeader/PageHeader";
+import Button from "../../../components/Global/Button/Button";
+import Loading from "../../../components/Global/Loading/Loading";
+import ConfirmationModal from "../../../components/Global/ConfirmationModal/ConfirmationModal";
 import { toast } from "react-toastify";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -49,6 +54,10 @@ const ServiceSubscriptions = () => {
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false);
   const [invoiceEmail, setInvoiceEmail] = useState("");
   const [invoiceDays, setInvoiceDays] = useState(30);
+  const [confirmRenew, setConfirmRenew] = useState(false);
+  const [renewTarget, setRenewTarget] = useState(null);
+  const [confirmDeleteOpen, setConfirmDelete] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
 
   const {
     data: subscriptions = [],
@@ -201,25 +210,37 @@ const ServiceSubscriptions = () => {
     }
   };
 
-  const handleQuickRenew = async (subscription) => {
-    if (window.confirm(`Renew ${subscription.serviceName} for another ${subscription.billingCycle}?`)) {
-      try {
-        await quickRenewSubscription(subscription._id).unwrap();
-        toast.success("Service renewed successfully!");
-      } catch (error) {
-        toast.error(error?.data?.message || "Failed to renew service");
-      }
+  const handleQuickRenew = (subscription) => {
+    setRenewTarget(subscription);
+    setConfirmRenew(true);
+  };
+
+  const confirmQuickRenew = async () => {
+    try {
+      await quickRenewSubscription(renewTarget._id).unwrap();
+      toast.success("Service renewed successfully!");
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to renew service");
+    } finally {
+      setConfirmRenew(false);
+      setRenewTarget(null);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this service subscription?")) {
-      try {
-        await deleteSubscription(id).unwrap();
-        toast.success("Service subscription deleted successfully");
-      } catch (error) {
-        toast.error("Failed to delete service subscription");
-      }
+  const handleDelete = (id) => {
+    setDeleteTargetId(id);
+    setConfirmDelete(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteSubscription(deleteTargetId).unwrap();
+      toast.success("Service subscription deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete service subscription");
+    } finally {
+      setConfirmDelete(false);
+      setDeleteTargetId(null);
     }
   };
 
@@ -280,17 +301,17 @@ const ServiceSubscriptions = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case "active":
-        return "bg-green-100 text-green-800";
+        return "bg-success/20 text-success";
       case "expiring_soon":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-600/20 text-yellow-600";
       case "expired":
-        return "bg-red-100 text-red-800";
+        return "bg-error/20 text-error";
       case "cancelled":
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 text-gray-600";
       case "suspended":
-        return "bg-orange-100 text-orange-800";
+        return "bg-yellow-100 text-yellow-800";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 text-gray-600";
     }
   };
 
@@ -336,49 +357,39 @@ const ServiceSubscriptions = () => {
   return (
     <div ref={pageRef} className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:justify-between lg:items-start">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Service Subscriptions</h1>
-          <p className="text-gray-600 mt-2">
-            Manage your domains, hosting, SSL certificates, and other recurring services
-          </p>
-        </div>
-        <button
-          onClick={handleExportPageAsPdf}
-          disabled={isExporting}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
+        <PageHeader
+          title="Service Subscriptions"
+          subtitle="Manage your domains, hosting, SSL certificates, and other recurring services"
+        />
+        <Button
+          className="w-full sm:w-auto"
+          icon={<FiImage />}
+          loading={isExporting}
+          loadingText="Exporting..."
           title="Export page as PDF"
+          onClick={handleExportPageAsPdf}
         >
-          {isExporting ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              <span>Exporting...</span>
-            </>
-          ) : (
-            <>
-              <FiImage />
-              <span>Export PDF</span>
-            </>
-          )}
-        </button>
+          Export PDF
+        </Button>
       </div>
 
       {/* Statistics Cards */}
       {statistics && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Active Services</p>
                 <p className="text-2xl font-bold text-gray-900 mt-2">{statistics.totalServices}</p>
               </div>
-              <div className="bg-blue-100 p-3 rounded-lg">
-                <FiServer className="text-blue-600 text-2xl" />
+              <div className="bg-primaryTint p-3 rounded-lg">
+                <FiServer className="text-primary text-2xl" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Expiring Soon</p>
@@ -390,7 +401,7 @@ const ServiceSubscriptions = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Monthly Cost</p>
@@ -404,7 +415,7 @@ const ServiceSubscriptions = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Yearly Cost</p>
@@ -412,8 +423,8 @@ const ServiceSubscriptions = () => {
                   {formatCostsByCurrency(statistics?.totalYearlyCost)}
                 </p>
               </div>
-              <div className="bg-purple-100 p-3 rounded-lg">
-                <FiCalendar className="text-purple-600 text-2xl" />
+              <div className="bg-primaryTint2 p-3 rounded-lg">
+                <FiCalendar className="text-dark text-2xl" />
               </div>
             </div>
           </div>
@@ -422,20 +433,20 @@ const ServiceSubscriptions = () => {
 
       {/* Annual Spending Report */}
       {annualReport && (
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <div className="flex items-center justify-between mb-6">
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
             <div className="flex items-center gap-3">
-              <FiTrendingUp className="text-blue-600 text-2xl" />
+              <FiTrendingUp className="text-primary text-2xl" />
               <div>
                 <h3 className="text-lg font-bold text-gray-900">Annual Spending Report</h3>
                 <p className="text-sm text-gray-600">Total expenditure and breakdown</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               >
                 {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map((year) => (
                   <option key={year} value={year}>
@@ -443,31 +454,27 @@ const ServiceSubscriptions = () => {
                   </option>
                 ))}
               </select>
-              <button
-                onClick={handleExportReport}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-              >
-                <FiDownload />
+              <Button icon={<FiDownload />} onClick={handleExportReport}>
                 Export Report
-              </button>
+              </Button>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
-              <p className="text-sm font-medium text-blue-900">Total Spent ({selectedYear})</p>
-              <p className="text-2xl font-bold text-blue-900 mt-2">
+            <div className="bg-primaryTint p-4 rounded-lg">
+              <p className="text-sm font-medium text-dark">Total Spent ({selectedYear})</p>
+              <p className="text-2xl font-bold text-ink mt-2">
                 {formatCostsByCurrency(annualReport?.totalSpending)}
               </p>
-              <p className="text-xs text-blue-700 mt-1">{annualReport?.totalRenewals} renewals</p>
+              <p className="text-xs text-muted mt-1">{annualReport?.totalRenewals} renewals</p>
             </div>
             <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg">
               <p className="text-sm font-medium text-green-900">Active Services</p>
               <p className="text-2xl font-bold text-green-900 mt-2">{annualReport?.totalServices}</p>
             </div>
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg">
-              <p className="text-sm font-medium text-purple-900">Projected Annual Cost</p>
-              <p className="text-2xl font-bold text-purple-900 mt-2">
+            <div className="bg-primaryTint2 p-4 rounded-lg">
+              <p className="text-sm font-medium text-dark">Projected Annual Cost</p>
+              <p className="text-2xl font-bold text-ink mt-2">
                 {formatCostsByCurrency(statistics?.totalYearlyCost)}
               </p>
             </div>
@@ -506,7 +513,7 @@ const ServiceSubscriptions = () => {
       )}
 
       {/* Filters and Actions */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
+      <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Search */}
           <div className="flex-1 relative">
@@ -516,7 +523,7 @@ const ServiceSubscriptions = () => {
               placeholder="Search services..."
               value={filters.search}
               onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
             />
           </div>
 
@@ -524,7 +531,7 @@ const ServiceSubscriptions = () => {
           <select
             value={filters.category}
             onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
           >
             <option value="">All Categories</option>
             <option value="domain">Domain</option>
@@ -541,7 +548,7 @@ const ServiceSubscriptions = () => {
           <select
             value={filters.status}
             onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
           >
             <option value="">All Statuses</option>
             <option value="active">Active</option>
@@ -552,59 +559,54 @@ const ServiceSubscriptions = () => {
           </select>
 
           {/* Action Buttons */}
-          <div className="flex gap-2">
-            <button
-              onClick={handleUpdateStatuses}
-              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-2"
+          <div className="flex flex-wrap gap-2">
+            <Button
+              color="tertiary"
+              icon={<FiRefreshCw />}
               title="Update all service statuses"
+              onClick={handleUpdateStatuses}
             >
-              <FiRefreshCw />
               <span className="hidden lg:inline">Update</span>
-            </button>
-            <button
-              onClick={handleSendReminders}
-              className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors flex items-center gap-2"
+            </Button>
+            <Button
+              color="primary"
+              icon={<FiMail />}
               title="Send renewal reminders"
+              onClick={handleSendReminders}
             >
-              <FiMail />
               <span className="hidden lg:inline">Reminders</span>
-            </button>
-            <button
-              onClick={() => setInvoiceModalOpen(true)}
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+            </Button>
+            <Button
+              color="primary"
+              icon={<FiFileText />}
               title="Send invoice for expiring services"
+              onClick={() => setInvoiceModalOpen(true)}
             >
-              <FiFileText />
               <span className="hidden lg:inline">Invoice</span>
-            </button>
-            <button
-              onClick={handleAdd}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-            >
-              <FiPlus />
+            </Button>
+            <Button color="primary" icon={<FiPlus />} onClick={handleAdd}>
               <span className="hidden lg:inline">Add Service</span>
-            </button>
+            </Button>
           </div>
         </div>
       </div>
 
       {/* Subscriptions Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="p-8 text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="flex justify-center">
+              <Loading className="text-primary" />
+            </div>
             <p className="text-gray-600 mt-2">Loading subscriptions...</p>
           </div>
         ) : subscriptions.length === 0 ? (
           <div className="p-8 text-center">
             <FiServer className="mx-auto text-gray-400 text-5xl mb-4" />
-            <p className="text-gray-600">No service subscriptions found</p>
-            <button
-              onClick={handleAdd}
-              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
+            <p className="text-center py-10 text-gray-500">No service subscriptions found</p>
+            <Button className="-mt-6" onClick={handleAdd}>
               Add Your First Service
-            </button>
+            </Button>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -641,8 +643,8 @@ const ServiceSubscriptions = () => {
                     <tr key={subscription._id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <FiServer className="text-blue-600" />
+                          <div className="flex-shrink-0 h-10 w-10 bg-primaryTint rounded-lg flex items-center justify-center">
+                            <FiServer className="text-primary" />
                           </div>
                           <div className="ml-4">
                             <div className="text-sm font-medium text-gray-900">{subscription.serviceName}</div>
@@ -692,7 +694,7 @@ const ServiceSubscriptions = () => {
                             Renew
                           </button>
                         )}
-                        <button onClick={() => handleEdit(subscription)} className="text-blue-600 hover:text-blue-900">
+                        <button onClick={() => handleEdit(subscription)} className="text-primary hover:text-ink">
                           Edit
                         </button>
                         <button
@@ -718,7 +720,7 @@ const ServiceSubscriptions = () => {
       {invoiceModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-            <div className="bg-purple-600 text-white px-6 py-4 rounded-t-lg">
+            <div className="bg-primary text-white px-6 py-4 rounded-t-lg">
               <h2 className="text-xl font-bold flex items-center gap-2">
                 <FiFileText />
                 Send Expiring Services Invoice
@@ -732,7 +734,7 @@ const ServiceSubscriptions = () => {
                 <select
                   value={invoiceDays}
                   onChange={(e) => setInvoiceDays(parseInt(e.target.value))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                 >
                   <option value={7}>7 days</option>
                   <option value={14}>14 days</option>
@@ -748,7 +750,7 @@ const ServiceSubscriptions = () => {
                   value={invoiceEmail}
                   onChange={(e) => setInvoiceEmail(e.target.value)}
                   placeholder="Leave empty to send to default emails"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
                 />
                 <p className="text-xs text-gray-500 mt-1">Default: cmdasec@gmail.com, ict@cmdanigeria.org</p>
               </div>
@@ -780,7 +782,7 @@ const ServiceSubscriptions = () => {
                 <button
                   onClick={handleSendInvoice}
                   disabled={isSendingInvoice}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-dark transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   {isSendingInvoice ? (
                     <>
@@ -799,6 +801,17 @@ const ServiceSubscriptions = () => {
           </div>
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={confirmDeleteOpen}
+        onClose={() => setConfirmDelete(false)}
+        icon={<FiTrash2 />}
+        title="Delete service subscription"
+        subtitle="Are you sure you want to delete this service subscription?"
+        mainAction={confirmDelete}
+        mainActionText="Delete"
+        subAction={true}
+      />
     </div>
   );
 };

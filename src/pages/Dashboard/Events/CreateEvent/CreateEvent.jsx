@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
 import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
+import PageHeader from "~/components/Global/PageHeader/PageHeader";
 import Select from "~/components/Global/FormElements/Select/Select";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
@@ -318,14 +319,17 @@ const CreateEvent = () => {
   return (
     <div>
       <BackButton label="Back to Events List" to="/events" />{" "}
-      <section className="bg-white rounded-2xl p-6 shadow mt-6">
-        <h3 className="font-bold text-lg mb-4">
-          {slug ? "Edit" : "Create"} {isConference ? "Conference" : "Event"}
-        </h3>
+      <div className="mt-6">
+        <PageHeader
+          title={`${slug ? "Edit" : "Create"} ${isConference ? "Conference" : "Event"}`}
+          subtitle="Fill in the details below"
+        />
+      </div>
+      <section className="bg-white rounded-xl shadow-sm p-6 mt-6">
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-4 gap-x-6">
             <div className="col-span-full">
-              <div className="flex items-center gap-4 mb-1 p-4 bg-purple-50 rounded-lg border border-purple-200">
+              <div className="flex items-center gap-4 mb-1 p-4 bg-primaryTint rounded-lg border border-onPrimaryContainer">
                 <label className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -351,7 +355,7 @@ const CreateEvent = () => {
             </div>
             {/* Subscription Requirement Toggle */}
             <div className={`col-span-full ${isExternalProgram ? "hidden" : ""}`}>
-              <div className="flex items-center gap-4 mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="flex items-center gap-4 mb-4 p-4 bg-primaryTint rounded-lg border border-onPrimaryContainer">
                 <label className="flex items-center gap-2">
                   <input
                     type="checkbox"

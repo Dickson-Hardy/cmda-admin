@@ -31,13 +31,16 @@ const Login = () => {
         dispatch(setTokens({ accessToken, refreshToken }));
         toast.success("Login successful");
         navigate("/");
+      })
+      .catch(() => {
+        // Failure is already toasted by the global error middleware
       });
   };
 
   return (
     <div>
-      <div className="mb-4 text-left">
-        <h2 className="text-3xl md:text-4xl font-bold mb-6">Welcome Back</h2>
+      <div className="mb-6">
+        <h2 className="text-2xl sm:text-3xl font-bold">Welcome Back</h2>
       </div>
       <form onSubmit={handleSubmit(handleLogin)} className="grid grid-cols-1 gap-4">
         <div>
@@ -65,7 +68,7 @@ const Login = () => {
         </div>
 
         {/* forgot password */}
-        <div className="ml-auto -mt-1">
+        <div className="ml-auto">
           <Link to="/forgot-password" className=" text-primary font-semibold text-sm hover:underline">
             Forgot Password?
           </Link>

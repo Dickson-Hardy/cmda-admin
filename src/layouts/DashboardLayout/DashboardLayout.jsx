@@ -19,8 +19,14 @@ const DashboardLayout = ({ withOutlet = true, children }) => {
   };
 
   useEffect(() => {
+    // Reset when crossing the breakpoint: open on desktop, closed on mobile
     setSidebarOpen(!isSmallScreen);
-  }, [isSmallScreen, pathname]);
+  }, [isSmallScreen]);
+
+  useEffect(() => {
+    // Close the mobile drawer on navigation; desktop collapse choice persists
+    if (isSmallScreen) setSidebarOpen(false);
+  }, [pathname, isSmallScreen]);
 
   const { data: { unreadMessagesCount } = {} } = useGetNotificationStatsQuery(null, {
     pollingInterval: 900000,
@@ -47,7 +53,7 @@ const DashboardLayout = ({ withOutlet = true, children }) => {
           )}
         >
           {/* Content */}
-          <main className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6 mt-20">
+          <main className="min-w-0 flex-1 overflow-x-auto overflow-y-auto p-4 sm:p-6 mt-20">
             {withOutlet ? <Outlet /> : children}
           </main>
 

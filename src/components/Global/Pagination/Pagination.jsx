@@ -87,7 +87,7 @@ const Pagination = ({
       disabled: "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed",
     },
     secondary: {
-      active: "bg-secondary text-white border-secondary",
+      active: "bg-primary text-white border-primary",
       inactive: "bg-white text-gray-700 border-gray-300 hover:bg-gray-50",
       disabled: "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed",
     },

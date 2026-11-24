@@ -55,16 +55,14 @@ const DonationsFilterModal = ({ isOpen, onClose, onSubmit = console.log }) => {
 
         <Button label="Apply Filter" type="submit" large className="w-full" />
         <div>
-          <button
-            type="button"
+          <Button
+            label="Reset Filters"
+            variant="text"
             onClick={() => {
               reset();
               onSubmit({});
             }}
-            className="text-primary font-semibold text-sm underline"
-          >
-            Reset Filters
-          </button>
+          />
         </div>
       </form>
     </Modal>

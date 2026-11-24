@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Button from "~/components/Global/Button/Button";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import PageHeader from "~/components/Global/PageHeader/PageHeader";
 import Table from "~/components/Global/Table/Table";
 import icons from "~/assets/js/icons";
@@ -15,6 +16,7 @@ const SystemSettings = () => {
   const [deleteBackup] = useDeleteBackupMutation();
   const [getDownloadUrl] = useLazyDownloadBackupQuery();
   const [deletingBackup, setDeletingBackup] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const [downloadingBackup, setDownloadingBackup] = useState(null);
 
   const handleCreateBackup = async () => {
@@ -52,11 +54,10 @@ const SystemSettings = () => {
     }
   };
 
-  const handleDeleteBackup = async (filename) => {
-    if (!window.confirm(`Are you sure you want to delete backup: ${filename}?`)) {
-      return;
-    }
-
+  const handleDeleteBackup = async () => {
+    const filename = deleteTarget;
+    if (!filename) return;
+    setDeleteTarget(null);
     try {
       setDeletingBackup(filename);
       await deleteBackup(filename).unwrap();
@@ -91,7 +92,7 @@ const SystemSettings = () => {
             <button
               onClick={() => handleDownloadBackup(item)}
               disabled={downloadingBackup === item.filename}
-              className="text-blue-600 hover:text-blue-800 font-medium text-sm disabled:opacity-50 flex items-center gap-1"
+              className="text-primary hover:text-ink font-medium text-sm disabled:opacity-50 flex items-center gap-1"
             >
               {downloadingBackup === item.filename ? (
                 "Downloading..."
@@ -105,7 +106,7 @@ const SystemSettings = () => {
               )}
             </button>
             <button
-              onClick={() => handleDeleteBackup(item.filename)}
+              onClick={() => setDeleteTarget(item.filename)}
               disabled={deletingBackup === item.filename}
               className="text-red-600 hover:text-red-800 font-medium text-sm disabled:opacity-50"
             >
@@ -136,9 +137,9 @@ const SystemSettings = () => {
           <Button label="Create Backup" loading={isCreating} onClick={handleCreateBackup} icon={icons.database} />
         </div>
 
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <div className="bg-primaryTint border border-onPrimaryContainer rounded-lg p-4 mb-6">
           <div className="flex items-start gap-3">
-            <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
@@ -146,8 +147,8 @@ const SystemSettings = () => {
               />
             </svg>
             <div className="flex-1">
-              <h4 className="font-semibold text-blue-900 text-sm mb-1">Automatic Backup Schedule</h4>
-              <p className="text-blue-800 text-sm">
+              <h4 className="font-semibold text-ink text-sm mb-1">Automatic Backup Schedule</h4>
+              <p className="text-ink text-sm">
                 Backups are automatically created every 2 weeks on Sunday at 2:00 AM. The system keeps the last 10
                 backups and automatically removes older ones.
               </p>
@@ -177,7 +178,7 @@ const SystemSettings = () => {
       {/* System Information */}
       <section className="bg-white shadow rounded-xl p-6 mt-8">
         <h3 className="font-bold text-lg mb-4">System Information</h3>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="border rounded-lg p-4">
             <p className="text-sm text-gray-600 mb-1">Database Type</p>
             <p className="font-semibold">MongoDB</p>
@@ -196,6 +197,18 @@ const SystemSettings = () => {
           </div>
         </div>
       </section>
+
+      <ConfirmationModal
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        icon={icons.delete}
+        title="Delete backup"
+        subtitle={`Are you sure you want to delete backup: ${deleteTarget || ""}?`}
+        mainAction={handleDeleteBackup}
+        mainActionText="Delete"
+        mainActionLoading={Boolean(deletingBackup)}
+        subAction={true}
+      />
     </div>
   );
 };

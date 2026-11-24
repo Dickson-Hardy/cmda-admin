@@ -4,6 +4,8 @@ import { useGetAllChaptersQuery, useGetChapterStatsQuery, useDeleteChapterMutati
 import ChapterModal from "~/components/Dashboard/Chapters/ChapterModal";
 import Pagination from "~/components/Global/Pagination/Pagination";
 import { FiPlus, FiEdit2, FiTrash2, FiUsers } from "react-icons/fi";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
+import PageHeader from "~/components/Global/PageHeader/PageHeader";
 
 const Chapters = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -11,6 +13,7 @@ const Chapters = () => {
   const [selectedType, setSelectedType] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingChapter, setEditingChapter] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const {
     data: chaptersResult,
@@ -35,9 +38,10 @@ const Chapters = () => {
     }
   }, [currentPage, totalPages]);
 
-  const handleDelete = async (id, name) => {
-    if (!window.confirm(`Are you sure you want to delete "${name}"?`)) return;
-
+  const handleDelete = async () => {
+    const { id } = deleteTarget || {};
+    if (!id) return;
+    setDeleteTarget(null);
     try {
       await deleteChapter(id).unwrap();
       toast.success("Chapter deleted successfully");
@@ -69,11 +73,11 @@ const Chapters = () => {
   const getTypeColor = (type) => {
     switch (type) {
       case "Student":
-        return "bg-blue-100 text-blue-800";
+        return "bg-onPrimaryContainer text-ink";
       case "Doctor":
         return "bg-green-100 text-green-800";
       case "Global":
-        return "bg-purple-100 text-purple-800";
+        return "bg-onPrimaryContainer text-primary";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -82,10 +86,10 @@ const Chapters = () => {
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Chapters Management</h1>
-        <p className="text-gray-600 mt-1">Manage student, doctor, and global chapters</p>
-      </div>
+      <PageHeader
+        title="Chapters Management"
+        subtitle="Manage student, doctor, and global chapters"
+      />
 
       {/* Stats Cards */}
       {stats && (
@@ -99,13 +103,13 @@ const Chapters = () => {
               <FiUsers className="text-3xl text-gray-400" />
             </div>
           </div>
-          <div className="bg-blue-50 rounded-lg shadow p-4">
+          <div className="bg-primaryTint rounded-lg shadow p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-blue-600">Student Chapters</p>
-                <p className="text-2xl font-bold text-blue-900">{stats.student}</p>
+                <p className="text-sm text-primary">Student Chapters</p>
+                <p className="text-2xl font-bold text-ink">{stats.student}</p>
               </div>
-              <FiUsers className="text-3xl text-blue-400" />
+              <FiUsers className="text-3xl text-primary" />
             </div>
           </div>
           <div className="bg-green-50 rounded-lg shadow p-4">
@@ -117,13 +121,13 @@ const Chapters = () => {
               <FiUsers className="text-3xl text-green-400" />
             </div>
           </div>
-          <div className="bg-purple-50 rounded-lg shadow p-4">
+          <div className="bg-primaryTint rounded-lg shadow p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-purple-600">Global Chapters</p>
-                <p className="text-2xl font-bold text-purple-900">{stats.global}</p>
+                <p className="text-sm text-primary">Global Chapters</p>
+                <p className="text-2xl font-bold text-dark">{stats.global}</p>
               </div>
-              <FiUsers className="text-3xl text-purple-400" />
+              <FiUsers className="text-3xl text-primary" />
             </div>
           </div>
         </div>
@@ -136,7 +140,7 @@ const Chapters = () => {
             <button
               onClick={() => handleTypeChange("all")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedType === "all" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                selectedType === "all" ? "bg-primary text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               All Chapters
@@ -144,7 +148,7 @@ const Chapters = () => {
             <button
               onClick={() => handleTypeChange("Student")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedType === "Student" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                selectedType === "Student" ? "bg-primary text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               Student
@@ -152,7 +156,7 @@ const Chapters = () => {
             <button
               onClick={() => handleTypeChange("Doctor")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedType === "Doctor" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                selectedType === "Doctor" ? "bg-primary text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               Doctor
@@ -160,7 +164,7 @@ const Chapters = () => {
             <button
               onClick={() => handleTypeChange("Global")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedType === "Global" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                selectedType === "Global" ? "bg-primary text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               Global
@@ -168,7 +172,7 @@ const Chapters = () => {
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-dark transition-colors"
           >
             <FiPlus /> Add Chapter
           </button>
@@ -179,13 +183,13 @@ const Chapters = () => {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {isLoading || isFetching ? (
           <div className="p-8 text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
             <p className="mt-4 text-gray-600">Loading chapters...</p>
           </div>
         ) : isError ? (
           <div className="p-8 text-center">
             <p className="text-red-600">Unable to load chapters.</p>
-            <button onClick={refetch} className="mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">
+            <button onClick={refetch} className="mt-3 text-sm font-medium text-primary hover:text-ink">
               Try again
             </button>
           </div>
@@ -246,11 +250,11 @@ const Chapters = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button onClick={() => handleEdit(chapter)} className="text-blue-600 hover:text-blue-900 mr-4">
+                      <button onClick={() => handleEdit(chapter)} className="text-primary hover:text-ink mr-4">
                         <FiEdit2 className="inline" />
                       </button>
                       <button
-                        onClick={() => handleDelete(chapter._id, chapter.name)}
+                        onClick={() => setDeleteTarget({ id: chapter._id, name: chapter.name })}
                         className="text-red-600 hover:text-red-900"
                       >
                         <FiTrash2 className="inline" />
@@ -274,7 +278,7 @@ const Chapters = () => {
                     setPerPage(Number(event.target.value));
                     setCurrentPage(1);
                   }}
-                  className="rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  className="rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-700 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 >
                   {[10, 25, 50].map((value) => (
                     <option key={value} value={value}>
@@ -307,6 +311,17 @@ const Chapters = () => {
           }}
         />
       )}
+
+      <ConfirmationModal
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        icon={<FiTrash2 />}
+        title="Delete chapter"
+        subtitle={`Are you sure you want to delete "${deleteTarget?.name || ""}"?`}
+        mainAction={handleDelete}
+        mainActionText="Delete"
+        subAction={true}
+      />
     </div>
   );
 };

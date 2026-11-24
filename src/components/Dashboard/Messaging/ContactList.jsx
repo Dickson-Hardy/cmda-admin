@@ -10,7 +10,7 @@ const ContactList = ({ isLoading, allContacts, hasMore, onLoadMore, isLoadingMor
     <div className="w-full lg:w-2/5 border-r pr-1">
       <SearchBar className="mx-2 mb-4" />
 
-      <div className="mt-4 h-[calc(100%-60px)] overflow-y-auto">
+      <div className="mt-4 h-[calc(100%-60px)] min-h-[280px] overflow-y-auto">
         <h4 className="text-sm font-semibold mb-1 sticky top-0 pb-1 bg-background">Recent Messages</h4>
         <div className="flex flex-col gap-1">
           {isLoading ? (

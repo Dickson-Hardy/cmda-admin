@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import Button from "~/components/Global/Button/Button";
+import PageHeader from "~/components/Global/PageHeader/PageHeader";
+import StatusChip from "~/components/Global/StatusChip/StatusChip";
 import {
   useGetZelleAdminSettingsQuery,
   useSaveZelleSettingsMutation,
@@ -52,10 +54,9 @@ export default function ZellePayments() {
   };
   return (
     <div className="space-y-6 max-w-5xl">
-      <h1 className="text-2xl font-bold">Zelle payments</h1>
-      <p>Manage USD receiving details and verify transfers before crediting a member.</p>
+      <PageHeader title="Zelle Payments" subtitle="Manage USD receiving details and verify transfers before crediting a member." />
       <form
-        className="bg-white p-4 sm:p-6 border rounded-lg space-y-4"
+        className="bg-white p-4 sm:p-6 rounded-xl shadow-sm space-y-4"
         onSubmit={async (e) => {
           e.preventDefault();
           try {
@@ -67,7 +68,7 @@ export default function ZellePayments() {
         }}
       >
         <h2 className="font-semibold">Receiving account</h2>
-        {settingsError && <p className="text-red-700">Unable to load settings. Refresh before editing.</p>}
+        {settingsError && <p className="text-error">Unable to load settings. Refresh before editing.</p>}
         <label className="flex gap-3 items-center">
           <input
             type="checkbox"
@@ -88,7 +89,7 @@ export default function ZellePayments() {
                 maxLength={max}
                 value={form[key]}
                 onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-                className="block w-full mt-1 border rounded p-3"
+                className="block w-full mt-1 border rounded p-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/50"
               />
             </label>
           ))}
@@ -99,18 +100,18 @@ export default function ZellePayments() {
             maxLength={1000}
             value={form.instructions}
             onChange={(e) => setForm({ ...form, instructions: e.target.value })}
-            className="block w-full mt-1 border rounded p-3"
+            className="block w-full mt-1 border rounded p-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/50"
           />
         </label>
         <Button type="submit" label="Save Zelle details" loading={saving} disabled={!settings || settingsError} />
       </form>
       {feedback && (
-        <p role="status" className="p-3 bg-gray-100 rounded break-words">
+        <p role="status" className="p-3 bg-primaryTint border border-onPrimaryContainer rounded-lg break-words">
           {feedback}
         </p>
       )}
       {selected && (
-        <section className="border rounded bg-white p-4 space-y-3">
+        <section className="bg-white rounded-xl shadow-sm p-4 space-y-3">
           <h2 className="font-semibold">Review {selected.intentCode}</h2>
           <p>
             {selected.user?.fullName} · USD {Number(selected.amount).toFixed(2)} · {selected.transferReference}
@@ -132,7 +133,7 @@ export default function ZellePayments() {
               maxLength={500}
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              className="block w-full border rounded p-3 mt-1"
+              className="block w-full border rounded p-3 mt-1 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/50"
             />
           </label>
           <div className="flex flex-wrap gap-3">
@@ -160,15 +161,19 @@ export default function ZellePayments() {
           </div>
         </section>
       )}
-      <section className="bg-white border rounded p-4 space-y-4">
+      <section className="bg-white rounded-xl shadow-sm p-4 space-y-4">
         <h2 className="font-semibold">Transfer review queue</h2>
         {isLoading ? (
-          <p>Loading transfers...</p>
+          <p className="text-center py-10 text-gray-500">Loading transfers...</p>
         ) : isError ? (
-          <p role="alert">Unable to load transfers.</p>
+          <p role="alert" className="text-center py-10 text-error">
+            Unable to load transfers.
+          </p>
         ) : (
           <>
-            {!data?.items?.length && <p>No Zelle transfers yet.</p>}
+            {!data?.items?.length && (
+              <p className="text-center py-10 text-gray-500">No Zelle transfers yet.</p>
+            )}
             {data?.items?.map((item) => (
               <div key={item._id} className="border-t pt-3 flex flex-col sm:flex-row gap-3 sm:justify-between">
                 <div className="min-w-0 space-y-1 text-sm">
@@ -178,10 +183,10 @@ export default function ZellePayments() {
                   <p className="break-all">
                     {item.intentCode} · {item.context}
                   </p>
-                  <p>
-                    {item.status.replaceAll("_", " ")}
-                    {item.contextData?.targetYear ? ` · ${item.contextData.targetYear}` : ""}
-                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <StatusChip status={item.status.replaceAll("_", " ").toLowerCase()} />
+                    {item.contextData?.targetYear && <span className="text-sm">{item.contextData.targetYear}</span>}
+                  </div>
                   {item.reviewNote && <p>{item.reviewNote}</p>}
                 </div>
                 {["AWAITING_REVIEW", "REVIEWING"].includes(item.status) && (

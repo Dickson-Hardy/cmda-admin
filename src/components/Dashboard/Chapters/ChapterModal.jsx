@@ -81,7 +81,7 @@ const ChapterModal = ({ chapter, onClose, onSuccess }) => {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               placeholder="e.g., Lagos University Teaching Hospital - LUTH"
             />
           </div>
@@ -97,7 +97,7 @@ const ChapterModal = ({ chapter, onClose, onSuccess }) => {
               onChange={handleChange}
               required
               disabled={!!chapter}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent disabled:bg-gray-100"
             >
               <option value="Student">Student</option>
               <option value="Doctor">Doctor</option>
@@ -116,7 +116,7 @@ const ChapterModal = ({ chapter, onClose, onSuccess }) => {
               name="location"
               value={formData.location}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               placeholder="e.g., Lagos, Nigeria"
             />
           </div>
@@ -129,7 +129,7 @@ const ChapterModal = ({ chapter, onClose, onSuccess }) => {
               value={formData.description}
               onChange={handleChange}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               placeholder="Brief description of the chapter"
             />
           </div>
@@ -142,7 +142,7 @@ const ChapterModal = ({ chapter, onClose, onSuccess }) => {
               id="isActive"
               checked={formData.isActive}
               onChange={handleChange}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="h-4 w-4 text-primary focus:ring-primary/50 border-gray-300 rounded"
             />
             <label htmlFor="isActive" className="ml-2 block text-sm text-gray-700">
               Active Chapter
@@ -161,7 +161,7 @@ const ChapterModal = ({ chapter, onClose, onSuccess }) => {
             <button
               type="submit"
               disabled={isCreating || isUpdating}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isCreating || isUpdating ? "Saving..." : chapter ? "Update" : "Create"}
             </button>

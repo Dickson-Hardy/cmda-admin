@@ -18,7 +18,7 @@ const RadioGroup = ({
   return (
     <div>
       {showTitleLabel && (
-        <label className="block mb-1 text-sm font-medium text-black">
+        <label className="block mb-1 text-sm font-medium text-ink">
           {title || convertToCapitalizedWords(label)}
           {required ? <span className="text-error ml-px">*</span> : null}
         </label>
